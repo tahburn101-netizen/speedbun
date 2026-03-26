@@ -228,14 +228,14 @@ nav{
   position:absolute;
   /* Car box overlaps the lower 60% of the text block
      Text: top 12% height 45% = ends at 57%
-     Car: top 30% bottom 16% = car sits at 30%-84%
-     Overlap zone: 30%-57% = car roof cuts through middle of giant text
-     bottom:16% leaves room for dots + buttons */
-  left:5%;
-  right:5%;
-  top:30%;
-  bottom:16%;
-  z-index:2;
+     Car: top 25% bottom 14% = car sits at 25%-86% (slightly larger)
+     Overlap zone: 25%-57% = car roof cuts through middle of giant text
+     bottom:14% leaves room for dots + buttons */
+  left:3%;
+  right:3%;
+  top:25%;
+  bottom:14%;
+  z-index:5;
   display:flex;
   align-items:flex-end;
   justify-content:center;
@@ -368,11 +368,12 @@ nav{
 }
 .h-ctas.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(10px)}
 
-/* Gallery panel */
+/* Gallery panel — positioned to cover as little of car as possible */
 .gallery-panel{
-  position:absolute;left:0;right:0;bottom:0;z-index:8;
+  position:absolute;left:0;right:0;bottom:0;z-index:6;
   background:rgba(238,243,247,0.97);backdrop-filter:blur(10px);
   padding:18px 40px 16px;
+  max-height:160px;
   transform:translateY(100%);
   transition:transform 0.5s cubic-bezier(0.77,0,0.18,1);
   border-top:1px solid rgba(91,155,191,0.15);
@@ -898,6 +899,12 @@ nav{
   </a>
   <a href="https://www.autotrader.co.uk" target="_blank" rel="noopener" title="AutoTrader">
     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+  </a>
+  <a href="https://www.instagram.com" target="_blank" rel="noopener" title="Instagram">
+    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor"/></svg>
+  </a>
+  <a href="https://wa.me/" target="_blank" rel="noopener" title="WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.255.949c-1.238.503-2.335 1.236-3.356 2.258-1.688 1.694-2.637 3.957-2.637 6.38 0 1.059.135 2.095.39 3.089L1.07 23.5l3.808-1.249a9.868 9.868 0 004.736 1.202h.005c5.432 0 9.869-4.43 9.869-9.869 0-2.631-.997-5.098-2.809-6.952-1.811-1.853-4.219-2.873-6.791-2.873"/></svg>
   </a>
 </div>
 
@@ -1591,6 +1598,8 @@ function openDetail(id) {
         <div class="det-actions-row">
           <button class="btn-fill" onclick="goPage('enquiry')">Make an Enquiry</button>
           <a class="btn-outline" href="${c.at}" target="_blank" rel="noopener">View on AutoTrader &#8599;</a>
+          <a class="btn-outline" href="https://www.instagram.com" target="_blank" rel="noopener">Instagram &#8599;</a>
+          <a class="btn-outline" href="https://wa.me/" target="_blank" rel="noopener">WhatsApp &#8599;</a>
           ${isAdmin ? `<button class="btn-outline" onclick="openEditCar(${c.id})">&#9998; Edit Car</button>` : ''}
         </div>
       </div>
