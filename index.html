@@ -154,12 +154,11 @@ nav{
 /* TEXT BOX — bounding box for brand + model text */
 .hero-text-block{
   position:absolute;
-  /* Text starts at 8% from top — brand name then giant model text */
-  top:8%;
+  top:6%;
   left:5%;
   right:5%;
-  height:48%;
-  z-index:1; /* Behind the car (z-index:3) but above background */
+  height:52%;
+  z-index:1; /* Always BEHIND the car (z-index:5) */
   text-align:center;
   pointer-events:none;
   display:flex;
@@ -227,14 +226,12 @@ nav{
 /* CAR BOX — bounding box wrapper for the car image */
 .hero-car-box{
   position:absolute;
-  /* Car box: large, overlapping text block for dramatic effect
-     top:15% bottom:8% = car fills most of hero vertically
-     left:0% right:0% = full width for maximum size */
   left:0%;
   right:0%;
-  top:15%;
-  bottom:8%;
-  z-index:3; /* Above text (z-index:1) so car appears in front */
+  top:12%;
+  /* bottom leaves room for the gallery strip (≈120px) + dots + CTAs */
+  bottom:130px;
+  z-index:5; /* ALWAYS above text (z-index:1) — car is always in front */
   display:flex;
   align-items:flex-end;
   justify-content:center;
@@ -293,7 +290,7 @@ nav{
   right:clamp(14px,3.5vw,48px);
   top:50%;
   transform:translateY(-50%);
-  z-index:8; /* Above gallery panel (z-index:6) so specs always visible */
+  z-index:9; /* Above everything — specs always visible */
   text-align:right;
   pointer-events:none;
 }
@@ -348,8 +345,7 @@ nav{
 /* Dots */
 .h-dots{
   position:absolute;
-  /* Dots sit just above the CTA buttons — buttons are at bottom:10px, ~44px tall, so dots at bottom:62px */
-  bottom:62px;
+  bottom:54px;
   left:50%;transform:translateX(-50%);
   z-index:10;display:flex;gap:8px;
 }
@@ -361,37 +357,61 @@ nav{
 
 /* CTAs — compact pill buttons at bottom centre */
 .h-ctas{
-  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
   z-index:10;display:flex;gap:10px;white-space:nowrap;
   transition:opacity 0.3s,transform 0.3s;
 }
 .h-ctas.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(10px)}
 
-/* Gallery panel */
+/* Gallery panel — slim strip at the very bottom, always fits without scrolling */
 .gallery-panel{
-  position:absolute;left:0;right:0;bottom:0;z-index:6;
-  background:rgba(238,243,247,0.97);backdrop-filter:blur(10px);
-  padding:12px 40px 10px;
+  position:absolute;left:0;right:0;bottom:0;z-index:7;
+  background:rgba(238,243,247,0.96);backdrop-filter:blur(12px);
+  /* Fixed height so it's always fully visible — no overflow scroll needed */
+  height:120px;
+  padding:8px 20px 6px;
   transform:translateY(100%);
-  transition:transform 0.5s cubic-bezier(0.77,0,0.18,1);
-  border-top:1px solid rgba(91,155,191,0.15);
-  max-height:22%; /* Compact panel — stays at bottom, never covers specs */
-  overflow-y:auto;
+  transition:transform 0.45s cubic-bezier(0.77,0,0.18,1);
+  border-top:1.5px solid rgba(91,155,191,0.18);
+  overflow:hidden; /* No scrolling — everything fits in 120px */
+  display:flex;
+  flex-direction:column;
 }
 .gallery-panel.open{transform:translateY(0)}
-.gp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
-.gp-label{font-size:10px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:var(--text-muted)}
-.gp-close{background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-muted);line-height:1;transition:color 0.2s}
-.gp-close:hover{color:var(--text)}
-.gp-row{display:flex;gap:11px;overflow-x:auto;padding-bottom:4px}
-.gp-row::-webkit-scrollbar{height:3px}
-.gp-thumb{
-  flex:0 0 calc(25% - 9px);min-width:140px;
-  aspect-ratio:16/10;border-radius:10px;overflow:hidden;
-  cursor:pointer;background:var(--bg2);
-  transition:transform 0.25s,box-shadow 0.25s;
+.gp-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:6px;flex-shrink:0;
 }
-.gp-thumb:hover{transform:scale(1.04);box-shadow:var(--shadow)}
+.gp-label{font-size:9px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:var(--text-muted)}
+.gp-close{
+  background:none;border:none;font-size:20px;
+  cursor:pointer;color:var(--text-muted);line-height:1;transition:color 0.2s;
+  padding:0 2px;
+}
+.gp-close:hover{color:var(--text)}
+/* Single horizontal scrollable row of thumbnails */
+.gp-row{
+  display:flex;gap:8px;
+  overflow-x:auto;overflow-y:hidden;
+  flex:1;
+  align-items:stretch;
+  padding-bottom:2px;
+}
+.gp-row::-webkit-scrollbar{height:3px}
+.gp-row::-webkit-scrollbar-thumb{background:var(--grey-mid);border-radius:2px}
+.gp-thumb{
+  /* Fixed height thumbnails — 4:3 ratio at ~80px tall = ~107px wide */
+  flex:0 0 auto;
+  width:auto;
+  height:100%;
+  aspect-ratio:4/3;
+  border-radius:8px;overflow:hidden;
+  cursor:pointer;background:var(--bg2);
+  transition:transform 0.22s,box-shadow 0.22s;
+  min-width:80px;
+  max-height:80px;
+}
+.gp-thumb:hover{transform:scale(1.05);box-shadow:var(--shadow)}
 .gp-thumb img{width:100%;height:100%;object-fit:cover}
 
 /* ═══════════════════════════════════════════════════════════
@@ -848,28 +868,33 @@ nav{
   .con-cards{grid-template-columns:1fr 1fr}
   .mbox,.mbox-wide{width:calc(100vw - 28px);padding:26px 20px}
   .m2col{grid-template-columns:1fr}
-  /* Gallery panel on mobile — clean bottom sheet, 2 thumbs per row */
-  .gallery-panel{padding:14px 14px 14px}
-  .gp-thumb{flex:0 0 calc(50% - 6px);min-width:0;aspect-ratio:4/3}
-  .gp-row{gap:8px}
-  /* Specs on mobile */
-  .hero-specs{right:6px;top:auto;bottom:110px;transform:none}
-  .spec-num{font-size:15px}
+  /* Gallery panel on mobile — same slim strip, horizontal scroll */
+  .gallery-panel{height:100px;padding:6px 12px 4px}
+  .gp-thumb{max-height:64px;min-width:64px}
+  .gp-row{gap:6px}
+  /* Specs on mobile — right side, vertically centred, above gallery */
+  .hero-specs{
+    right:8px;
+    top:50%;
+    bottom:auto;
+    transform:translateY(-60%);
+  }
+  .spec-num{font-size:14px}
   .spec-lbl,.spec-unit{font-size:7px}
   .specs-title{font-size:7px}
-  .spec-item{margin-bottom:10px}
+  .spec-item{margin-bottom:9px}
   /* Arrows */
   .h-arrow{font-size:26px;padding:6px}
   /* Buttons */
-  .btn-fill,.btn-outline{padding:10px 20px;font-size:11px}
-  /* Hero text tighter on mobile */
-  .hero-text-block{top:8%;height:40%}
-  .hero-car-box{top:28%;bottom:18%}
-  .hero-bg-text{font-size:20vw}
-  .hero-make{font-size:clamp(11px,3.5vw,20px);letter-spacing:0.28em}
+  .btn-fill,.btn-outline{padding:9px 18px;font-size:11px}
+  /* Mobile hero — SAME layout as desktop: big faded text, car on top */
+  .hero-text-block{top:5%;left:2%;right:2%;height:52%;z-index:1}
+  .hero-car-box{top:10%;left:0;right:0;bottom:110px;z-index:5}
+  .hero-bg-text{font-size:22vw}
+  .hero-make{font-size:clamp(10px,4vw,18px);letter-spacing:0.22em}
   /* Dots and CTAs */
-  .h-dots{bottom:58px}
-  .h-ctas{bottom:12px;gap:8px}
+  .h-dots{bottom:50px}
+  .h-ctas{bottom:6px;gap:7px}
   /* Featured grid */
   .featured-section{padding:40px 18px}
   /* Nav on mobile: hide account label, keep avatar + burger */
@@ -885,15 +910,18 @@ nav{
   .stat-card{padding:14px 8px}
   .stat-num{font-size:24px}
   .det-info{grid-template-columns:1fr}
-  /* Hero even tighter on small phones */
-  .hero-text-block{top:6%;height:38%}
-  .hero-car-box{top:26%;bottom:20%}
-  .hero-bg-text{font-size:22vw}
-  .h-dots{bottom:56px}
-  .h-ctas{bottom:10px;gap:6px}
-  .btn-fill,.btn-outline{padding:9px 16px;font-size:10px}
-  /* Gallery 2 cols on small phones */
-  .gp-thumb{flex:0 0 calc(50% - 5px)}
+  /* Small phones — same desktop-style hero, just tighter */
+  .hero-text-block{top:4%;left:1%;right:1%;height:50%;z-index:1}
+  .hero-car-box{top:8%;left:0;right:0;bottom:106px;z-index:5}
+  .hero-bg-text{font-size:24vw}
+  .hero-make{font-size:clamp(9px,4.5vw,16px);letter-spacing:0.18em}
+  .hero-specs{right:5px;top:50%;transform:translateY(-60%)}
+  .spec-num{font-size:13px}
+  .gallery-panel{height:96px;padding:5px 10px 3px}
+  .gp-thumb{max-height:60px;min-width:60px}
+  .h-dots{bottom:48px}
+  .h-ctas{bottom:5px;gap:6px}
+  .btn-fill,.btn-outline{padding:8px 14px;font-size:10px}
   /* Featured 1 col */
   .featured-grid{grid-template-columns:1fr}
   .featured-section{padding:32px 16px}
@@ -942,6 +970,20 @@ nav{
   </a>
   <a href="https://www.autotrader.co.uk" target="_blank" rel="noopener" title="AutoTrader">
     <img src="data:image/png;base64,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" alt="AutoTrader" style="width:20px;height:20px;object-fit:contain;display:block">
+  </a>
+  <!-- Instagram -->
+  <a href="https://www.instagram.com" target="_blank" rel="noopener" title="Instagram" id="socialInstagram">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+      <circle cx="12" cy="12" r="4"/>
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+  </a>
+  <!-- WhatsApp -->
+  <a href="https://wa.me/447700900123" target="_blank" rel="noopener" title="WhatsApp" id="socialWhatsapp">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
   </a>
 </div>
 
@@ -1194,6 +1236,7 @@ nav{
   <button class="a-btn" onclick="openManageReviews()">&#9733; Reviews</button>
   <button class="a-btn" onclick="openFeaturedPicker()">&#9733; Featured</button>
   <button class="a-btn" id="editBtn" onclick="toggleEdit()">&#9998; Edit Text</button>
+  <button class="a-btn" onclick="saveSettings()">&#128190; Save</button>
   <button class="a-logout" onclick="doLogout()">Log Out</button>
 </div>
 
@@ -1654,7 +1697,7 @@ function openDetail(id) {
         <div class="det-actions-row">
           <button class="btn-fill" onclick="goPage('enquiry')">Make an Enquiry</button>
           <a class="btn-outline" href="${c.at}" target="_blank" rel="noopener">View on AutoTrader &#8599;</a>
-          ${isAdmin ? `<button class="btn-outline" onclick="openEditCar(${c.id})">&#9998; Edit Car</button>` : ''}
+          ${isAdmin ? `<button class="btn-outline" onclick="openEditCar(${c.id})">&#9998; Edit Car</button><button class="btn-outline" style="background:#c0392b;border-color:#c0392b;color:#fff" onclick="deleteCar(${c.id})">&#128465; Delete Car</button>` : ''}
         </div>
       </div>
       <div class="det-sidebar">
