@@ -224,13 +224,19 @@ nav{
 .hero-specs{
   position:absolute;
   right:clamp(10px,3.5vw,48px);
-  top:50%;transform:translateY(-50%);
+  top:50%;
+  transform:translateY(-50%) translateX(120px);
   z-index:4;
   text-align:right;
   display:flex;flex-direction:column;align-items:flex-end;gap:14px;
-  /* Always visible */
+  opacity:0;
+  pointer-events:none;
+  transition:transform 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.35s ease;
+}
+.hero-specs.visible{
+  transform:translateY(-50%) translateX(0);
   opacity:1;
-  transition:opacity 0.4s;
+  pointer-events:auto;
 }
 .specs-title{
   font-size:9px;font-weight:700;letter-spacing:0.28em;
@@ -339,14 +345,14 @@ nav{
 ═══════════════════════════════════════════════════════════ */
 .btn-fill{
   /* Compact pill — matches reference ~130×38px */
-  padding:10px 32px;background:var(--blue-deep);color:#fff;
+  padding:10px 32px;background:var(--hero-accent, var(--blue-deep));color:#fff;
   border:none;border-radius:50px;
   font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;
   letter-spacing:0.09em;text-transform:uppercase;cursor:pointer;
   transition:background 0.2s,transform 0.2s,box-shadow 0.2s;
   box-shadow:0 4px 18px rgba(26,77,107,0.28);
 }
-.btn-fill:hover{background:var(--blue);transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,155,191,0.4)}
+.btn-fill:hover{background:var(--hero-accent, var(--blue));filter:brightness(1.15);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.25)}
 .btn-fill:active{transform:translateY(0)}
 .btn-outline{
   /* Compact pill outlined */
@@ -1237,7 +1243,7 @@ let recipientEmail = 'tahmid772011@gmail.com';
 const cars = [
   {
     id:1,
-    make:'LAMBORGHINI',model:'HURACÁN',name:'Lamborghini Huracán',
+    make:'LAMBORGHINI',model:'HURACÁN',name:'Lamborghini Huracán',accent:'#8B1A1A',
     year:'2021',miles:'12,800 mi',price:'£189,995',
     fuel:'Petrol',trans:'Automatic',color:'Rosso Mars Red',
     hp:'610',seats:'2',range:'22',
@@ -1253,7 +1259,7 @@ const cars = [
   },
   {
     id:2,
-    make:'FERRARI',model:'488 GTB',name:'Ferrari 488 GTB',
+    make:'FERRARI',model:'488 GTB',name:'Ferrari 488 GTB',accent:'#CC0000',
     year:'2020',miles:'8,400 mi',price:'£219,995',
     fuel:'Petrol',trans:'Automatic',color:'Rosso Corsa Red',
     hp:'660',seats:'2',range:'21',
@@ -1269,7 +1275,7 @@ const cars = [
   },
   {
     id:3,
-    make:'McLAREN',model:'720S',name:'McLaren 720S',
+    make:'McLAREN',model:'720S',name:'McLaren 720S',accent:'#E8620A',
     year:'2022',miles:'14,100 mi',price:'£32,995',
     fuel:'Electric',trans:'Auto',color:'Crimson Red',
     hp:'720',seats:'2',range:'23',
@@ -1331,9 +1337,10 @@ function buildHero() {
     carImg.alt = c.name;
     carImg.onclick = () => toggleGallery(c.id);
 
-    // ── Right SPECS strip ──
+    // ── Right SPECS strip (hidden until car click) ──
     const specs = document.createElement('div');
     specs.className = 'hero-specs';
+    specs.id = 'hspecs-' + i;
     specs.innerHTML = `
       <div class="specs-title">Specs</div>
       <div class="spec-item">
@@ -1427,8 +1434,16 @@ function heroSet(newIdx, dir) {
     oldCar.classList.remove('slide-out-left', 'slide-out-right');
     oldBgt.classList.remove('exit-up');
     oldMake.classList.remove('exit-up');
+    // Hide specs of old slide
+    const oldSpecs = document.getElementById('hspecs-' + hi);
+    if (oldSpecs) oldSpecs.classList.remove('visible');
     hi = newIdx;
     isAnimating = false;
+    // Update accent colour for new slide
+    const newCar2 = cars[hi];
+    if (newCar2 && newCar2.accent) {
+      document.documentElement.style.setProperty('--hero-accent', newCar2.accent);
+    }
   }, 550);
 }
 
@@ -1446,16 +1461,28 @@ function stopAuto() { clearInterval(hTimer); }
 // ═══════════════════════════════════════════════════════════
 function toggleGallery(id) {
   const c = cars.find(x => x.id === id);
+  const specsEl = document.getElementById('hspecs-' + hi);
+  if (galOpen && specsEl && specsEl.classList.contains('visible')) {
+    // Already open — close specs
+    specsEl.classList.remove('visible');
+    galOpen = false;
+    startAuto();
+    return;
+  }
+  // Show specs
+  if (specsEl) specsEl.classList.add('visible');
   // Update gallery thumbnails with this car's interior photos
   document.getElementById('gpRow').innerHTML = c.imgs.map((img, idx) => `
     <div class="gp-thumb" onclick="openLightbox(${c.id},${idx})">
       <img src="${img}" loading="lazy" alt="${c.name} photo ${idx + 1}">
     </div>`).join('');
-  // Mark as open (thumbnails now show real photos)
   galOpen = true;
   stopAuto();
 }
 function closeGallery() {
+  // Hide specs on current slide
+  const specsEl = document.getElementById('hspecs-' + hi);
+  if (specsEl) specsEl.classList.remove('visible');
   galOpen = false;
   startAuto();
 }
@@ -1972,7 +1999,11 @@ function saveCar() {
     });
   }
   document.getElementById('addMbg').classList.remove('open');
-  buildHero(); renderShowroom(); fillSelect();
+  buildHero();
+// Set initial accent colour from first car
+if (cars[0] && cars[0].accent) {
+  document.documentElement.style.setProperty('--hero-accent', cars[0].accent);
+} renderShowroom(); fillSelect();
   if (editingCarId) openDetail(editingCarId);
 }
 
