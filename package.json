@@ -1,0 +1,16 @@
+{
+  "name": "speedbun",
+  "version": "1.0.0",
+  "description": "Speed Bun - Premium Used Cars, Birmingham",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["cars", "used", "birmingham"],
+  "author": "Speed Bun",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
