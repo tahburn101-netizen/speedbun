@@ -133,7 +133,7 @@ nav{
 /* ── Brand label (e.g. "ELECTRIC") ── */
 .hero-make{
   position:absolute;
-  top:clamp(14px,3.5%,28px);
+  top:clamp(12px,2.5%,22px);
   left:50%;transform:translateX(-50%);
   z-index:3;
   font-family:'Barlow Condensed',sans-serif;
@@ -152,11 +152,11 @@ nav{
 /* ── Giant watermark model text ── */
 .hero-bg-text{
   position:absolute;
-  top:clamp(20px,8%,60px);
-  left:50%;transform:translateX(-50%);
+  top:50%;
+  left:50%;transform:translate(-50%,-60%);
   z-index:1;
   font-family:'Barlow Condensed',sans-serif;
-  font-size:clamp(55px,14vw,180px);
+  font-size:clamp(70px,18vw,220px);
   font-weight:900;
   letter-spacing:-0.01em;
   text-transform:uppercase;
@@ -182,13 +182,13 @@ nav{
 /* ── Car image ── */
 .hero-car{
   position:absolute;
-  /* Car overlaps the watermark text — sits at ~38% from top */
-  top:38%;left:50%;
+  /* Car overlaps the watermark — centred vertically in hero */
+  top:50%;left:50%;
   transform:translate(-50%,-50%);
   z-index:2;
-  height:clamp(200px,52%,460px);
-  width:auto;
-  max-width:90%;
+  width:clamp(280px,75%,680px);
+  height:auto;
+  max-width:92%;
   object-fit:contain;
   filter:drop-shadow(0 18px 36px rgba(0,0,0,0.12));
   cursor:pointer;
@@ -204,20 +204,20 @@ nav{
 .hero-car.slide-out-left{animation:carOutLeft 0.38s cubic-bezier(0.55,0,1,0.45) forwards}
 .hero-car.slide-out-right{animation:carOutRight 0.38s cubic-bezier(0.55,0,1,0.45) forwards}
 @keyframes carInRight{
-  from{transform:translate(60%,-50%) scale(0.92);opacity:0}
+  from{transform:translate(80%,-50%) scale(0.9);opacity:0}
   to{transform:translate(-50%,-50%) scale(1);opacity:1}
 }
 @keyframes carInLeft{
-  from{transform:translate(-160%,-50%) scale(0.92);opacity:0}
+  from{transform:translate(-180%,-50%) scale(0.9);opacity:0}
   to{transform:translate(-50%,-50%) scale(1);opacity:1}
 }
 @keyframes carOutLeft{
   from{transform:translate(-50%,-50%);opacity:1}
-  to{transform:translate(-160%,-50%) scale(0.92);opacity:0}
+  to{transform:translate(-180%,-50%) scale(0.9);opacity:0}
 }
 @keyframes carOutRight{
   from{transform:translate(-50%,-50%);opacity:1}
-  to{transform:translate(60%,-50%) scale(0.92);opacity:0}
+  to{transform:translate(80%,-50%) scale(0.9);opacity:0}
 }
 
 /* ── Right SPECS strip ── */
