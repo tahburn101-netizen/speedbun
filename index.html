@@ -99,8 +99,10 @@ nav{
    PAGE SYSTEM
 ═══════════════════════════════════════════════════════════ */
 .page-wrap{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;overflow:hidden}
-.page{position:absolute;inset:0;overflow-y:auto;display:none;background:var(--bg)}
-.page.active{display:block}
+.page{position:absolute;inset:0;overflow-y:auto;display:none;background:var(--bg);flex-direction:column}
+.page.active{display:flex}
+/* Ensure footer sticks to bottom */
+.page > .site-footer{margin-top:auto}
 
 /* ═══════════════════════════════════════════════════════════
    HERO
@@ -148,8 +150,11 @@ nav{
 /* Text block: brand + model stacked, centred, upper area */
 .hero-text-block{
   position:absolute;
-  /* Anchor the TOP of the block at 10% from hero top — matches reference */
-  top:10%;
+  /* Text block: giant text spans upper 45% of hero.
+     Brand name at ~8%, model text from ~12% to ~45%.
+     Car bottom-anchored at 12% from bottom, so car top
+     is at ~35%, overlapping the lower half of the text. */
+  top:8%;
   left:50%;
   transform:translateX(-50%);
   z-index:1;
@@ -207,27 +212,28 @@ nav{
   to{transform:translateY(0);opacity:1}
 }
 
-/* Car — large, fills the hero from ~28% to ~88% vertically */
+/* Car — large, bottom-anchored, overlaps the text block */
 .hero-car{
   position:absolute;
-  /* Top at 28% — overlaps the giant model text */
-  top:28%;
+  /* Bottom at 12% from bottom — car sits in lower 60% of hero.
+     Since text block is centred at 38% and car bottom is at 88%,
+     the car body overlaps the lower half of the giant text. */
+  bottom:12%;
   left:50%;
   transform:translateX(-50%);
   z-index:2;
-  /* Use height as primary so it fills the hero vertically.
-     Height = 88% - 28% = 60% of hero height */
-  height:58%;
+  /* Height ~52% of hero so car fills nicely without overflow */
+  height:52%;
   width:auto;
-  max-width:90%;
+  max-width:88%;
   object-fit:contain;
   filter:drop-shadow(0 20px 40px rgba(26,77,107,0.15));
   cursor:pointer;
   transition:transform 0.35s cubic-bezier(0.34,1.4,0.64,1);
-  transform-origin:center center;
+  transform-origin:center bottom;
 }
 .hero-car:hover{
-  transform:translateX(-50%) scale(1.025) translateY(-6px);
+  transform:translateX(-50%) scale(1.025) translateY(-4px);
 }
 /* Car slide animations */
 .hero-car.slide-in-right{
@@ -259,23 +265,25 @@ nav{
   to{transform:translateX(80%) scale(0.9);opacity:0}
 }
 
-/* Specs panel */
+/* Specs panel — top right, no icons, clean text only */
 .hero-specs{
-  position:absolute;right:clamp(14px,4vw,52px);top:50%;
-  transform:translateY(-50%);
-  z-index:4;text-align:right;
+  position:absolute;
+  right:clamp(14px,3.5vw,48px);
+  top:clamp(20px,8%,80px);
+  z-index:4;
+  text-align:right;
 }
 .specs-title{
   font-size:9px;font-weight:700;letter-spacing:0.28em;
-  text-transform:uppercase;color:var(--text-muted);margin-bottom:18px;
+  text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;
 }
-.spec-item{margin-bottom:18px}
-.spec-icon{font-size:16px;opacity:0.4;margin-bottom:2px}
+.spec-item{margin-bottom:14px}
+.spec-icon{display:none} /* icons removed */
 .spec-num{
   font-family:'Barlow Condensed',sans-serif;
-  font-size:clamp(18px,2.2vw,26px);font-weight:900;line-height:1;color:var(--text);
+  font-size:clamp(16px,2vw,24px);font-weight:900;line-height:1;color:var(--text);
 }
-.spec-unit{font-size:11px;font-weight:600;color:var(--text-muted)}
+.spec-unit{font-size:10px;font-weight:600;color:var(--text-muted)}
 .spec-lbl{
   font-size:8px;font-weight:700;letter-spacing:0.2em;
   text-transform:uppercase;color:var(--text-muted);margin-top:1px;
@@ -294,7 +302,7 @@ nav{
 
 /* Dots */
 .h-dots{
-  position:absolute;bottom:58px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:46px;left:50%;transform:translateX(-50%);
   z-index:10;display:flex;gap:8px;
 }
 .h-dot{
@@ -305,7 +313,7 @@ nav{
 
 /* CTAs — compact pill buttons at bottom centre */
 .h-ctas{
-  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
   z-index:10;display:flex;gap:10px;white-space:nowrap;
   transition:opacity 0.3s,transform 0.3s;
 }
@@ -714,6 +722,8 @@ nav{
 .site-footer{
   background:var(--blue-deep);color:rgba(255,255,255,0.5);
   text-align:center;padding:22px;font-size:12px;
+  flex-shrink:0; /* never shrink in flex container */
+  width:100%;
 }
 .site-footer a{color:var(--blue-light);text-decoration:none}
 
@@ -1120,17 +1130,14 @@ function buildHero() {
       <div class="hero-specs">
         <div class="specs-title">Specs</div>
         <div class="spec-item">
-          <div class="spec-icon">&#128739;</div>
           <div class="spec-num">${c.range} <span class="spec-unit">mi</span></div>
           <div class="spec-lbl">Range</div>
         </div>
         <div class="spec-item">
-          <div class="spec-icon">&#128188;</div>
           <div class="spec-num">${c.seats}</div>
           <div class="spec-lbl">Seats</div>
         </div>
         <div class="spec-item">
-          <div class="spec-icon">&#9889;</div>
           <div class="spec-num">${c.hp}</div>
           <div class="spec-lbl">Horse Power</div>
         </div>
