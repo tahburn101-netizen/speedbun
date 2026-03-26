@@ -84,16 +84,24 @@ nav{
    SOCIAL SIDEBAR
 ═══════════════════════════════════════════════════════════ */
 .social-bar{
-  position:fixed;left:20px;top:50%;transform:translateY(-50%);
-  z-index:400;display:flex;flex-direction:column;gap:24px;
+  position:fixed;left:16px;top:50%;transform:translateY(-50%);
+  z-index:400;display:flex;flex-direction:column;gap:14px;
 }
 .social-bar a{
-  color:var(--text-muted);text-decoration:none;
-  transition:color 0.2s,transform 0.2s;
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,0.85);
+  border:1.5px solid rgba(91,155,191,0.25);
+  color:var(--blue-dark);text-decoration:none;
+  transition:background 0.2s,color 0.2s,transform 0.2s,box-shadow 0.2s;
   display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(26,77,107,0.10);
 }
-.social-bar a:hover{color:var(--blue);transform:scale(1.2)}
-.social-bar svg{width:15px;height:15px;fill:currentColor}
+.social-bar a:hover{
+  background:var(--blue);color:#fff;
+  transform:scale(1.12);
+  box-shadow:0 4px 16px rgba(26,77,107,0.22);
+}
+.social-bar svg{width:20px;height:20px;fill:currentColor}
 
 /* ═══════════════════════════════════════════════════════════
    PAGE SYSTEM
