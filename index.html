@@ -118,9 +118,10 @@ nav{
 ═══════════════════════════════════════════════════════════ */
 .home-hero{
   position:relative;
+  /* Taller hero to fit car + gallery + CTAs like LC Series */
   height:calc(100vh - var(--nav-h));
   max-height:calc(100vh - var(--nav-h));
-  min-height:480px;
+  min-height:560px;
   background:var(--bg);
   overflow:hidden;
   perspective:1200px;
@@ -151,20 +152,20 @@ nav{
    Font size is set to fill the text box width using vw.
 ═══════════════════════════════════════════════════════════ */
 
-/* TEXT BOX — bounding box for brand + model text */
+/* TEXT BOX — covers the car area (same as car box), always behind car */
 .hero-text-block{
   position:absolute;
-  top:6%;
+  top:0;
   left:5%;
   right:5%;
-  height:52%;
+  bottom:246px;
   z-index:1; /* Always BEHIND the car (z-index:5) */
   text-align:center;
   pointer-events:none;
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:flex-start;
+  justify-content:center;
   overflow:hidden;
 }
 
@@ -223,33 +224,39 @@ nav{
   to{transform:translateY(0);opacity:1}
 }
 
-/* CAR BOX — bounding box wrapper for the car image */
+/* CAR BOX — fills the top 58% of the hero, car always large */
 .hero-car-box{
   position:absolute;
-  left:0%;
-  right:0%;
-  top:12%;
-  /* bottom leaves room for the gallery strip (≈120px) + dots + CTAs */
-  bottom:130px;
+  left:0;
+  right:0;
+  top:0;
+  /* bottom = gallery (170px) + gp-ctas (52px) + dots (24px) */
+  bottom:246px;
   z-index:5; /* ALWAYS above text (z-index:1) — car is always in front */
   display:flex;
-  align-items:flex-end;
+  align-items:center;
   justify-content:center;
   pointer-events:none;
+  overflow:hidden;
+  /* Padding so car doesn't touch the edges */
+  padding:16px 80px 0;
 }
 
-/* Car image fills its bounding box, maintains aspect ratio */
+/* Car image — always fills the bounding box, scales to fill */
 .hero-car{
   width:100%;
   height:100%;
   object-fit:contain;
   object-position:center bottom;
-  filter:drop-shadow(0 16px 32px rgba(26,77,107,0.15));
+  filter:drop-shadow(0 20px 40px rgba(26,77,107,0.18));
   cursor:pointer;
   pointer-events:auto;
   transition:transform 0.35s cubic-bezier(0.34,1.4,0.64,1);
   transform-origin:center bottom;
   display:block;
+  /* Ensure small images scale up to fill the box */
+  min-width:100%;
+  min-height:100%;
 }
 .hero-car:hover{
   transform:scale(1.025) translateY(-4px);
@@ -284,12 +291,17 @@ nav{
   to{transform:translateX(120%) scale(0.9);opacity:0}
 }
 
-/* Specs panel — hidden by default, slides in from right when gallery opens */
+/* Specs panel — always visible on the right side of the car area */
 .hero-specs{
   position:absolute;
   right:clamp(14px,3.5vw,48px);
-  top:50%;
-  transform:translateY(-50%);
+  /* Centre vertically within the car area (top 0 to bottom:246px) */
+  top:0;
+  bottom:246px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-end;
   z-index:9; /* Above everything — specs always visible */
   text-align:right;
   pointer-events:none;
@@ -342,10 +354,10 @@ nav{
 .h-prev{left:6px}
 .h-next{right:6px}
 
-/* Dots */
+/* Dots — sit between CTAs and gallery */
 .h-dots{
   position:absolute;
-  bottom:54px;
+  bottom:222px;
   left:50%;transform:translateX(-50%);
   z-index:10;display:flex;gap:8px;
 }
@@ -355,64 +367,60 @@ nav{
 }
 .h-dot.active{background:var(--blue);transform:scale(1.4)}
 
-/* CTAs — compact pill buttons at bottom centre */
+/* CTAs — sit just above the gallery panel */
 .h-ctas{
-  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:178px;left:50%;transform:translateX(-50%);
   z-index:10;display:flex;gap:10px;white-space:nowrap;
   transition:opacity 0.3s,transform 0.3s;
 }
 .h-ctas.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(10px)}
 
-/* Gallery panel — slim strip at the very bottom, always fits without scrolling */
+/* Gallery panel — LC Series style: always visible at bottom, 4 large thumbnails */
 .gallery-panel{
   position:absolute;left:0;right:0;bottom:0;z-index:7;
-  background:rgba(238,243,247,0.96);backdrop-filter:blur(12px);
-  /* Fixed height so it's always fully visible — no overflow scroll needed */
-  height:120px;
-  padding:8px 20px 6px;
-  transform:translateY(100%);
-  transition:transform 0.45s cubic-bezier(0.77,0,0.18,1);
-  border-top:1.5px solid rgba(91,155,191,0.18);
-  overflow:hidden; /* No scrolling — everything fits in 120px */
+  background:var(--bg);
+  height:170px;
+  padding:10px 24px 12px;
+  /* Always visible — no slide animation */
+  border-top:1px solid rgba(91,155,191,0.12);
+  overflow:hidden;
   display:flex;
   flex-direction:column;
 }
-.gallery-panel.open{transform:translateY(0)}
+/* Keep .open class for JS compatibility but panel is always shown */
+.gallery-panel.open{}
 .gp-header{
   display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:6px;flex-shrink:0;
+  margin-bottom:8px;flex-shrink:0;
 }
-.gp-label{font-size:9px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:var(--text-muted)}
+.gp-label{
+  font-size:9px;font-weight:700;letter-spacing:0.28em;
+  text-transform:uppercase;color:var(--text-muted);
+}
 .gp-close{
   background:none;border:none;font-size:20px;
   cursor:pointer;color:var(--text-muted);line-height:1;transition:color 0.2s;
   padding:0 2px;
 }
 .gp-close:hover{color:var(--text)}
-/* Single horizontal scrollable row of thumbnails */
+/* 4 large thumbnails in a single row — LC Series style */
 .gp-row{
-  display:flex;gap:8px;
-  overflow-x:auto;overflow-y:hidden;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
   flex:1;
-  align-items:stretch;
-  padding-bottom:2px;
+  overflow:hidden;
 }
-.gp-row::-webkit-scrollbar{height:3px}
-.gp-row::-webkit-scrollbar-thumb{background:var(--grey-mid);border-radius:2px}
 .gp-thumb{
-  /* Fixed height thumbnails — 4:3 ratio at ~80px tall = ~107px wide */
-  flex:0 0 auto;
-  width:auto;
-  height:100%;
-  aspect-ratio:4/3;
-  border-radius:8px;overflow:hidden;
+  border-radius:10px;overflow:hidden;
   cursor:pointer;background:var(--bg2);
   transition:transform 0.22s,box-shadow 0.22s;
-  min-width:80px;
-  max-height:80px;
+  aspect-ratio:4/3;
+  width:100%;
+  height:100%;
 }
-.gp-thumb:hover{transform:scale(1.05);box-shadow:var(--shadow)}
-.gp-thumb img{width:100%;height:100%;object-fit:cover}
+.gp-thumb:hover{transform:scale(1.04);box-shadow:0 6px 20px rgba(26,77,107,0.22)}
+.gp-thumb img{width:100%;height:100%;object-fit:cover;display:block;border-radius:10px;}
 
 /* ═══════════════════════════════════════════════════════════
    BUTTONS
@@ -868,16 +876,16 @@ nav{
   .con-cards{grid-template-columns:1fr 1fr}
   .mbox,.mbox-wide{width:calc(100vw - 28px);padding:26px 20px}
   .m2col{grid-template-columns:1fr}
-  /* Gallery panel on mobile — same slim strip, horizontal scroll */
-  .gallery-panel{height:100px;padding:6px 12px 4px}
-  .gp-thumb{max-height:64px;min-width:64px}
-  .gp-row{gap:6px}
-  /* Specs on mobile — right side, vertically centred, above gallery */
+  /* Gallery panel on mobile — LC Series style, 4 grid, always visible */
+  .gallery-panel{height:140px;padding:8px 12px 6px}
+  .gp-row{gap:5px}
+  .gp-thumb{border-radius:8px}
+  /* Specs on mobile — right side, vertically centred within car area */
   .hero-specs{
-    right:8px;
-    top:50%;
-    bottom:auto;
-    transform:translateY(-60%);
+    right:6px;
+    top:0;
+    bottom:220px;
+    transform:none;
   }
   .spec-num{font-size:14px}
   .spec-lbl,.spec-unit{font-size:7px}
@@ -887,14 +895,14 @@ nav{
   .h-arrow{font-size:26px;padding:6px}
   /* Buttons */
   .btn-fill,.btn-outline{padding:9px 18px;font-size:11px}
-  /* Mobile hero — SAME layout as desktop: big faded text, car on top */
-  .hero-text-block{top:5%;left:2%;right:2%;height:52%;z-index:1}
-  .hero-car-box{top:10%;left:0;right:0;bottom:110px;z-index:5}
+  /* Mobile hero — LC Series layout: car fills top, gallery always at bottom */
+  .hero-text-block{top:0;left:2%;right:2%;bottom:220px;z-index:1}
+  .hero-car-box{top:0;left:0;right:0;bottom:220px;z-index:5;padding:12px 50px 0}
   .hero-bg-text{font-size:22vw}
   .hero-make{font-size:clamp(10px,4vw,18px);letter-spacing:0.22em}
-  /* Dots and CTAs */
-  .h-dots{bottom:50px}
-  .h-ctas{bottom:6px;gap:7px}
+  /* Dots and CTAs above gallery */
+  .h-dots{bottom:148px}
+  .h-ctas{bottom:148px;gap:7px;transform:translateX(-50%) translateY(-24px)}
   /* Featured grid */
   .featured-section{padding:40px 18px}
   /* Nav on mobile: hide account label, keep avatar + burger */
@@ -910,17 +918,16 @@ nav{
   .stat-card{padding:14px 8px}
   .stat-num{font-size:24px}
   .det-info{grid-template-columns:1fr}
-  /* Small phones — same desktop-style hero, just tighter */
-  .hero-text-block{top:4%;left:1%;right:1%;height:50%;z-index:1}
-  .hero-car-box{top:8%;left:0;right:0;bottom:106px;z-index:5}
+  /* Small phones — LC Series layout, tighter */
+  .hero-text-block{top:0;left:1%;right:1%;bottom:210px;z-index:1}
+  .hero-car-box{top:0;left:0;right:0;bottom:210px;z-index:5;padding:8px 36px 0}
   .hero-bg-text{font-size:24vw}
   .hero-make{font-size:clamp(9px,4.5vw,16px);letter-spacing:0.18em}
-  .hero-specs{right:5px;top:50%;transform:translateY(-60%)}
-  .spec-num{font-size:13px}
-  .gallery-panel{height:96px;padding:5px 10px 3px}
-  .gp-thumb{max-height:60px;min-width:60px}
-  .h-dots{bottom:48px}
-  .h-ctas{bottom:5px;gap:6px}
+  .hero-specs{right:4px;top:0;bottom:210px;transform:none}
+  .spec-num{font-size:12px}
+  .gallery-panel{height:130px;padding:6px 10px 5px}
+  .h-dots{bottom:138px}
+  .h-ctas{bottom:138px;gap:6px;transform:translateX(-50%) translateY(-22px)}
   .btn-fill,.btn-outline{padding:8px 14px;font-size:10px}
   /* Featured 1 col */
   .featured-grid{grid-template-columns:1fr}
@@ -1005,7 +1012,6 @@ nav{
       <div class="gallery-panel" id="galleryPanel">
         <div class="gp-header">
           <span class="gp-label">Take a Look</span>
-          <button class="gp-close" onclick="closeGallery()">&#215;</button>
         </div>
         <div class="gp-row" id="gpRow"></div>
       </div>
@@ -1452,6 +1458,9 @@ function heroSet(newIdx, dir) {
   // Update button colour to match new car
   updateBtnColour(newIdx);
 
+  // Show specs for new slide
+  showSpecs(newIdx);
+
   setTimeout(() => {
     oldSlide.classList.remove('current');
     oldSlide.style.opacity = '';
@@ -1465,13 +1474,23 @@ function heroSet(newIdx, dir) {
 }
 
 function heroGo(d) {
-  if (galOpen) return;
   const newIdx = (hi + d + cars.length) % cars.length;
   heroSet(newIdx, d);
+  // Update gallery for new slide
+  setTimeout(() => updateGallery(cars[newIdx]), 300);
 }
 
-function startAuto() { hTimer = setInterval(() => { if (!galOpen && !isAnimating) heroGo(1); }, 6000); }
+function startAuto() { hTimer = setInterval(() => { if (!isAnimating) heroGo(1); }, 6000); }
 function stopAuto() { clearInterval(hTimer); }
+
+// Update gallery thumbnails for the current car — always visible
+function updateGallery(c) {
+  if (!c || !c.imgs || !c.imgs.length) return;
+  document.getElementById('gpRow').innerHTML = c.imgs.map((img, idx) => `
+    <div class="gp-thumb" onclick="openLightbox(${c.id},${idx})">
+      <img src="${img}" loading="lazy" alt="${c.name} photo ${idx + 1}">
+    </div>`).join('');
+}
 
 // ═══════════════════════════════════════════════════════════
 // GALLERY (hero click — pauses reel)
@@ -1505,27 +1524,14 @@ function updateBtnColour(idx) {
   btn.style.borderColor = c.accentColor || 'var(--blue-deep)';
 }
 
+// Gallery is always visible — clicking car opens lightbox at first image
 function toggleGallery(id) {
-  if (galOpen) { closeGallery(); return; }
   const c = cars.find(x => x.id === id);
-  stopAuto();
-  document.getElementById('gpRow').innerHTML = c.imgs.map((img, idx) => `
-    <div class="gp-thumb" onclick="openLightbox(${c.id},${idx})">
-      <img src="${img}" loading="lazy" alt="${c.name} photo ${idx + 1}">
-    </div>`).join('');
-  document.getElementById('galleryPanel').classList.add('open');
-  document.getElementById('heroCtas').classList.add('hidden');
-  galOpen = true;
-  // Show specs with staggered animation
-  showSpecs(hi);
+  if (c && c.imgs && c.imgs.length) openLightbox(c.id, 0);
 }
 function closeGallery() {
-  document.getElementById('galleryPanel').classList.remove('open');
-  document.getElementById('heroCtas').classList.remove('hidden');
+  // No-op — gallery is always visible
   galOpen = false;
-  startAuto();
-  // Hide specs
-  hideSpecs(hi);
 }
 function openCurrentDetail() { openDetail(cars[hi].id); }
 
@@ -2044,6 +2050,11 @@ function saveCar() {
   }
   document.getElementById('addMbg').classList.remove('open');
   buildHero(); renderShowroom(); fillSelect();
+  // Update gallery and specs for current slide
+  if (cars.length > 0) {
+    updateGallery(cars[hi] || cars[0]);
+    setTimeout(() => showSpecs(hi), 200);
+  }
   if (editingCarId) openDetail(editingCarId);
 }
 
@@ -2120,6 +2131,10 @@ fillSelect();
 startAuto();
 // Set initial button colour
 updateBtnColour(0);
+// Populate gallery with first car's images — always visible
+if (cars.length > 0) updateGallery(cars[0]);
+// Show specs for first slide on load
+setTimeout(() => showSpecs(0), 400);
 // Fit hero text to bounding box
 setTimeout(fitHeroText, 100);
 window.addEventListener('resize', fitHeroText);
