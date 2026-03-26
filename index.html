@@ -152,22 +152,22 @@ nav{
 ═══════════════════════════════════════════════════════════ */
 
 /* TEXT BOX — bounding box for brand + model text */
-.hero-text-block{
-  position:absolute;
-  /* Text starts at 12% from top — brand name then giant model text */
-  top:12%;
-  left:5%;
-  right:5%;
-  height:45%;
-  z-index:1;
-  text-align:center;
-  pointer-events:none;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  overflow:hidden;
-}
+	.hero-text-block{
+	  position:absolute;
+	  /* Text starts at 12% from top — brand name then giant model text */
+	  top:12%;
+	  left:5%;
+	  right:5%;
+	  height:45%;
+	  z-index:0; /* Lowered to be behind the car box (z-index: 2) */
+	  text-align:center;
+	  pointer-events:none;
+	  display:flex;
+	  flex-direction:column;
+	  align-items:center;
+	  justify-content:flex-start;
+	  overflow:hidden;
+	}
 
 /* Brand name — sits just above the giant model text */
 .hero-make{
@@ -190,21 +190,21 @@ nav{
 .hero-make-inner.enter-down{animation:textEnterDown 0.38s cubic-bezier(0,0.55,0.45,1) 0.05s both;opacity:0}
 
 /* MODEL TEXT BOX — giant faded text behind the car */
-.hero-bg-text{
-  display:block;
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:18vw;
-  font-weight:900;
-  letter-spacing:-0.03em;
-  text-transform:uppercase;
-  color:rgba(26,77,107,0.11);
-  line-height:0.82;
-  overflow:hidden;
-  width:90vw;
-  white-space:nowrap;
-  max-width:100%;
-  flex-shrink:0;
-}
+	.hero-bg-text{
+	  display:block;
+	  font-family:'Barlow Condensed',sans-serif;
+	  font-size:18vw;
+	  font-weight:900;
+	  letter-spacing:-0.03em;
+	  text-transform:uppercase;
+	  color:rgba(26,77,107,0.11);
+	  line-height:0.82;
+	  overflow:hidden;
+	  width:90vw;
+	  white-space:nowrap;
+	  max-width:100%;
+	  flex-shrink:0;
+	}
 .hero-bg-text-inner{
   display:block;
   /* Use inline-size to auto-scale font to fit the container */
@@ -225,23 +225,23 @@ nav{
 }
 
 /* CAR BOX — bounding box wrapper for the car image */
-.hero-car-box{
-  position:absolute;
-  /* Car box overlaps the lower 60% of the text block
-     Text: top 12% height 45% = ends at 57%
-     Car: top 30% bottom 16% = car sits at 30%-84%
-     Overlap zone: 30%-57% = car roof cuts through middle of giant text
-     bottom:16% leaves room for dots + buttons */
-  left:5%;
-  right:5%;
-  top:30%;
-  bottom:16%;
-  z-index:2;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  pointer-events:none;
-}
+	.hero-car-box{
+	  position:absolute;
+	  /* Car box overlaps the lower 60% of the text block
+	     Text: top 12% height 45% = ends at 57%
+	     Car: top 20% bottom 10% = car sits at 20%-90% (Increased size)
+	     Overlap zone: 20%-57% = car roof cuts through middle of giant text
+	     bottom:10% leaves room for dots + buttons */
+	  left:2%;
+	  right:2%;
+	  top:20%;
+	  bottom:10%;
+	  z-index:2;
+	  display:flex;
+	  align-items:flex-end;
+	  justify-content:center;
+	  pointer-events:none;
+	}
 
 /* Car image fills its bounding box, maintains aspect ratio */
 .hero-car{
@@ -370,14 +370,16 @@ nav{
 .h-ctas.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(10px)}
 
 /* Gallery panel */
-.gallery-panel{
-  position:absolute;left:0;right:0;bottom:0;z-index:8;
-  background:rgba(238,243,247,0.97);backdrop-filter:blur(10px);
-  padding:18px 40px 16px;
-  transform:translateY(100%);
-  transition:transform 0.5s cubic-bezier(0.77,0,0.18,1);
-  border-top:1px solid rgba(91,155,191,0.15);
-}
+	.gallery-panel{
+	  position:absolute;left:0;right:0;bottom:0;z-index:8;
+	  background:rgba(238,243,247,0.97);backdrop-filter:blur(10px);
+	  padding:18px 40px 16px;
+	  transform:translateY(100%);
+	  transition:transform 0.5s cubic-bezier(0.77,0,0.18,1);
+	  border-top:1px solid rgba(91,155,191,0.15);
+	  max-height: 20%; /* Even lower to ensure specs are visible */
+	  overflow-y: auto;
+	}
 .gallery-panel.open{transform:translateY(0)}
 .gp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
 .gp-label{font-size:10px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:var(--text-muted)}
