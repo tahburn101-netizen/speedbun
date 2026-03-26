@@ -891,78 +891,6 @@ nav{
   font-size:26px;font-weight:900;font-style:italic;color:var(--blue);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   DETAIL PAGE
-═══════════════════════════════════════════════════════════ */
-.det-back-bar{
-  display:flex;align-items:center;padding:14px 40px;
-  border-bottom:1px solid rgba(91,155,191,0.12);
-  background:var(--bg);position:sticky;top:0;z-index:10;
-  backdrop-filter:blur(8px);
-}
-.det-back{
-  background:none;border:none;font-size:13px;font-weight:700;
-  color:var(--text-muted);cursor:pointer;
-  display:flex;align-items:center;gap:5px;letter-spacing:0.05em;
-  transition:color 0.2s;
-}
-.det-back:hover{color:var(--text)}
-.det-car-name{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:22px;font-weight:900;color:var(--blue-deep);margin-left:18px;
-}
-.det-price-tag{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:24px;font-weight:900;font-style:italic;
-  color:var(--blue);margin-left:auto;
-}
-
-/* Image reel */
-.det-reel{position:relative;background:var(--bg2);overflow:hidden}
-.det-reel-track{display:flex;transition:transform 0.5s cubic-bezier(0.77,0,0.18,1)}
-.det-reel-slide{
-  min-width:100%;
-  height:clamp(260px,50vw,520px);
-  display:flex;align-items:center;justify-content:center;
-  background:var(--bg2);
-}
-.det-reel-slide img{max-width:100%;max-height:100%;object-fit:contain;padding:14px}
-.det-reel-prev,.det-reel-next{
-  position:absolute;top:50%;transform:translateY(-50%);
-  background:rgba(26,77,107,0.3);color:#fff;border:none;
-  width:40px;height:40px;border-radius:50%;
-  font-size:22px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:background 0.2s,transform 0.2s;z-index:5;line-height:1;
-}
-.det-reel-prev:hover,.det-reel-next:hover{background:rgba(26,77,107,0.6);transform:translateY(-50%) scale(1.1)}
-.det-reel-prev{left:14px}
-.det-reel-next{right:14px}
-.det-reel-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:7px}
-.det-reel-dot{width:6px;height:6px;border-radius:50%;background:rgba(26,77,107,0.2);cursor:pointer;transition:all 0.2s}
-.det-reel-dot.active{background:var(--blue);transform:scale(1.4)}
-.det-thumbs-strip{display:flex;gap:9px;padding:13px 40px;overflow-x:auto;background:var(--bg)}
-.det-thumbs-strip::-webkit-scrollbar{height:3px}
-.det-thumb-item{
-  flex:0 0 82px;height:58px;border-radius:8px;overflow:hidden;
-  cursor:pointer;border:2px solid transparent;transition:border-color 0.2s,transform 0.2s;
-  background:var(--bg2);flex-shrink:0;
-}
-.det-thumb-item:hover{transform:scale(1.05)}
-.det-thumb-item.active{border-color:var(--blue)}
-.det-thumb-item img{width:100%;height:100%;object-fit:cover}
-.det-info{display:grid;grid-template-columns:1fr 280px;gap:30px;padding:26px 40px 48px}
-.det-desc-label{font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
-.det-desc{font-size:14px;color:var(--text-muted);line-height:1.9}
-.det-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-.det-badge{background:var(--bg2);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-muted)}
-.det-actions-row{display:flex;gap:11px;margin-top:20px;flex-wrap:wrap}
-.det-sidebar{background:var(--white);border-radius:14px;padding:20px;height:fit-content;box-shadow:var(--shadow)}
-.det-sidebar h4{font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
-.det-c-row{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:13px;color:var(--text)}
-.det-c-icon{width:28px;height:28px;background:var(--blue-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-.det-enquire-btn{width:100%;padding:12px;margin-top:14px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:background 0.2s,transform 0.2s;box-shadow:0 4px 14px rgba(91,155,191,0.3)}
-.det-enquire-btn:hover{background:var(--blue-dark);transform:translateY(-2px)}
 
 /* ═══════════════════════════════════════════════════════════
    ENQUIRY — full width
@@ -1141,7 +1069,6 @@ nav{
   .social-bar{display:none}
   .about-section,.reviews-section{padding:36px 24px;overflow:visible}
   .sw-wrap,.enq-wrap,.con-wrap{padding:28px 18px}
-  .det-back-bar,.det-thumbs-strip{padding:10px 16px}
   .det-info{grid-template-columns:1fr;padding:18px 16px 36px}
   .about-stats{grid-template-columns:repeat(3,1fr);gap:11px}
   .stat-num{font-size:30px}
@@ -1165,7 +1092,6 @@ nav{
   .car-grid{grid-template-columns:1fr}
   .con-cards{grid-template-columns:1fr}
   .about-stats{grid-template-columns:1fr;gap:10px}
-  .det-info{grid-template-columns:1fr}
 }
 </style>
 </head>
