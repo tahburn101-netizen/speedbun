@@ -134,48 +134,47 @@ nav{
 .hero-slide.current{opacity:1;pointer-events:auto}
 
 /* ═══════════════════════════════════════════════════════════
-   HERO TEXT + CAR  —  matched 1:1 to reference TikTok video
-   Layout analysis:
-   • Hero fills full viewport below nav
-   • Brand name (e.g. "AUDI") — small, spaced, ~18-20px, sits
-     just above the giant model text with ~8px gap
-   • Giant model text (e.g. "A3", "LC SERIES") — very large,
-     ~20vw, very faded (opacity ~0.12), upper-centre of hero
-   • Car — large, ~78% of hero width, bottom-anchored so it
-     sits in lower 55% and overlaps the text from below
-   • Text animates: exits UP, new text enters from BELOW
-   • Car slides horizontally (right→left or left→right)
+   HERO TEXT + CAR — BOUNDING BOX SYSTEM
+   Everything is defined as % of the hero container.
+   Text box:  left:5% right:5%  top:8%  height:42%
+   Car box:   left:10% right:10%  top:30%  bottom:14%
+   The car box overlaps the lower half of the text box.
+   Font size is set to fill the text box width using vw.
 ═══════════════════════════════════════════════════════════ */
 
-/* Text block: brand + model stacked, centred, upper area */
+/* TEXT BOX — bounding box for brand + model text */
 .hero-text-block{
   position:absolute;
-  /* Text block: giant text spans upper 45% of hero.
-     Brand name at ~8%, model text from ~12% to ~45%.
-     Car bottom-anchored at 12% from bottom, so car top
-     is at ~35%, overlapping the lower half of the text. */
+  /* Bounding box: spans full width with side padding,
+     starts at 8% from top, height is 42% of hero */
   top:8%;
-  left:50%;
-  transform:translateX(-50%);
+  left:5%;
+  right:5%;
+  height:42%;
   z-index:1;
   text-align:center;
   pointer-events:none;
-  white-space:nowrap;
-  line-height:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  overflow:hidden;
 }
 
-/* Brand name — small, spaced, just above model text */
+/* Brand name — fills ~8% of the text box height */
 .hero-make{
   display:block;
   font-family:'Barlow Condensed',sans-serif;
-  font-size:clamp(13px,1.6vw,20px);
+  /* Brand name is ~12% of hero width in the reference */
+  font-size:2.2vw;
   font-weight:700;
   letter-spacing:0.42em;
   text-transform:uppercase;
   color:rgba(26,77,107,0.48);
   line-height:1;
-  margin-bottom:4px;  /* tight gap — just 4px above model text */
+  margin-bottom:0.3em;
   overflow:hidden;
+  flex-shrink:0;
 }
 .hero-make-inner{
   display:block;
@@ -183,22 +182,33 @@ nav{
 .hero-make-inner.exit-up{animation:textExitUp 0.38s cubic-bezier(0.55,0,1,0.45) forwards}
 .hero-make-inner.enter-down{animation:textEnterDown 0.38s cubic-bezier(0,0.55,0.45,1) 0.05s both;opacity:0}
 
-/* Giant faded model text — fills most of the hero width */
+/* MODEL TEXT BOX — fills the remaining text box width */
 .hero-bg-text{
   display:block;
   font-family:'Barlow Condensed',sans-serif;
-  /* ~20vw so it fills the hero width — matches reference */
-  font-size:clamp(72px,18vw,240px);
+  /* Font size = 90% of the text box width (left:5% right:5% = 90vw box)
+     Using vw so it always fills the box regardless of screen size.
+     90vw box / ~6 chars avg = ~15vw per char, headline fills box at ~18vw */
+  font-size:18vw;
   font-weight:900;
   letter-spacing:-0.02em;
   text-transform:uppercase;
-  /* Very faded — reference shows ~12% opacity */
   color:rgba(26,77,107,0.12);
-  line-height:0.9;
+  line-height:0.85;
   overflow:hidden;
+  /* Scale down if text is wider than the box */
+  width:90vw;
+  white-space:nowrap;
+  /* fit-content scaling: shrink font if text overflows the box */
+  max-width:100%;
+  flex-shrink:0;
 }
 .hero-bg-text-inner{
   display:block;
+  /* Use inline-size to auto-scale font to fit the container */
+  display:inline-block;
+  max-width:90vw;
+  overflow:visible;
 }
 .hero-bg-text-inner.exit-up{animation:textExitUp 0.42s cubic-bezier(0.55,0,1,0.45) forwards}
 .hero-bg-text-inner.enter-down{animation:textEnterDown 0.42s cubic-bezier(0,0.55,0.45,1) 0.05s both;opacity:0}
@@ -212,28 +222,38 @@ nav{
   to{transform:translateY(0);opacity:1}
 }
 
-/* Car — large, bottom-anchored, overlaps the text block */
-.hero-car{
+/* CAR BOX — bounding box wrapper for the car image */
+.hero-car-box{
   position:absolute;
-  /* Bottom at 12% from bottom — car sits in lower 60% of hero.
-     Since text block is centred at 38% and car bottom is at 88%,
-     the car body overlaps the lower half of the giant text. */
-  bottom:12%;
-  left:50%;
-  transform:translateX(-50%);
+  /* Car box: left 8% right 8% (84vw wide), top 28% bottom 14%
+     This overlaps the lower half of the text box (text: top 8% h 42% = ends at 50%)
+     Car box top 28% means car overlaps text from 28% to 50% */
+  left:8%;
+  right:8%;
+  top:28%;
+  bottom:14%;
   z-index:2;
-  /* Height ~52% of hero so car fills nicely without overflow */
-  height:52%;
-  width:auto;
-  max-width:88%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+}
+
+/* Car image fills its bounding box, maintains aspect ratio */
+.hero-car{
+  width:100%;
+  height:100%;
   object-fit:contain;
-  filter:drop-shadow(0 20px 40px rgba(26,77,107,0.15));
+  object-position:center bottom;
+  filter:drop-shadow(0 16px 32px rgba(26,77,107,0.15));
   cursor:pointer;
+  pointer-events:auto;
   transition:transform 0.35s cubic-bezier(0.34,1.4,0.64,1);
   transform-origin:center bottom;
+  display:block;
 }
 .hero-car:hover{
-  transform:translateX(-50%) scale(1.025) translateY(-4px);
+  transform:scale(1.025) translateY(-4px);
 }
 /* Car slide animations */
 .hero-car.slide-in-right{
@@ -249,27 +269,29 @@ nav{
   animation:carOutRight 0.38s cubic-bezier(0.55,0,1,0.45) forwards;
 }
 @keyframes carInRight{
-  from{transform:translateX(80%) scale(0.9);opacity:0}
-  to{transform:translateX(-50%) scale(1);opacity:1}
+  from{transform:translateX(120%) scale(0.9);opacity:0}
+  to{transform:translateX(0) scale(1);opacity:1}
 }
 @keyframes carInLeft{
-  from{transform:translateX(-180%) scale(0.9);opacity:0}
-  to{transform:translateX(-50%) scale(1);opacity:1}
+  from{transform:translateX(-120%) scale(0.9);opacity:0}
+  to{transform:translateX(0) scale(1);opacity:1}
 }
 @keyframes carOutLeft{
-  from{transform:translateX(-50%);opacity:1}
-  to{transform:translateX(-180%) scale(0.9);opacity:0}
+  from{transform:translateX(0);opacity:1}
+  to{transform:translateX(-120%) scale(0.9);opacity:0}
 }
 @keyframes carOutRight{
-  from{transform:translateX(-50%);opacity:1}
-  to{transform:translateX(80%) scale(0.9);opacity:0}
+  from{transform:translateX(0);opacity:1}
+  to{transform:translateX(120%) scale(0.9);opacity:0}
 }
 
 /* Specs panel — top right, no icons, clean text only */
 .hero-specs{
   position:absolute;
   right:clamp(14px,3.5vw,48px);
-  top:clamp(20px,8%,80px);
+  /* Vertically centred in the car box area (car box: top 28% bottom 14%) */
+  top:50%;
+  transform:translateY(-50%);
   z-index:4;
   text-align:right;
 }
@@ -302,7 +324,10 @@ nav{
 
 /* Dots */
 .h-dots{
-  position:absolute;bottom:46px;left:50%;transform:translateX(-50%);
+  position:absolute;
+  /* Dots sit just above the CTA buttons — buttons are at bottom:10px, ~44px tall, so dots at bottom:62px */
+  bottom:62px;
+  left:50%;transform:translateX(-50%);
   z-index:10;display:flex;gap:8px;
 }
 .h-dot{
@@ -313,7 +338,7 @@ nav{
 
 /* CTAs — compact pill buttons at bottom centre */
 .h-ctas{
-  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
   z-index:10;display:flex;gap:10px;white-space:nowrap;
   transition:opacity 0.3s,transform 0.3s;
 }
@@ -781,7 +806,9 @@ nav{
     <button class="nav-tab" id="t-contact" onclick="goPage('contact')">Contact Us</button>
   </div>
   <div class="nav-right" onclick="openLogin()">
-    <div class="nav-avatar" id="navAv">S</div>
+    <div class="nav-avatar" id="navAv">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    </div>
     <span class="nav-acct-lbl" id="navLbl">My Account</span>
   </div>
   <button class="nav-burger" id="navBurger" onclick="toggleMobileMenu()" aria-label="Menu">
@@ -1125,8 +1152,10 @@ function buildHero() {
         <div class="hero-make"><span class="hero-make-inner" id="hmake-${i}">${c.make}</span></div>
         <div class="hero-bg-text"><span class="hero-bg-text-inner" id="hbgt-${i}">${c.model}</span></div>
       </div>
-      <img class="hero-car" src="${heroImgData[c.id] || c.heroImg}" alt="${c.name}" id="hcar-${i}"
-           onclick="toggleGallery(${c.id})" title="Click to see more photos">
+      <div class="hero-car-box">
+        <img class="hero-car" src="${heroImgData[c.id] || c.heroImg}" alt="${c.name}" id="hcar-${i}"
+             onclick="toggleGallery(${c.id})" title="Click to see more photos">
+      </div>
       <div class="hero-specs">
         <div class="specs-title">Specs</div>
         <div class="spec-item">
@@ -1148,6 +1177,36 @@ function buildHero() {
     d.className = 'h-dot' + (i === 0 ? ' active' : '');
     d.onclick = () => heroSet(i);
     dots.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// FIT HERO TEXT — auto-scale model text to fill text box width
+// ═══════════════════════════════════════════════════════════
+function fitHeroText() {
+  // The text box is 90vw wide (left:5% right:5% of viewport)
+  const boxWidth = window.innerWidth * 0.90;
+  cars.forEach((c, i) => {
+    const inner = document.getElementById('hbgt-' + i);
+    if (!inner) return;
+    // Start at 18vw and scale down until text fits in box
+    let fs = window.innerWidth * 0.18;
+    inner.style.fontSize = fs + 'px';
+    // Reduce font size until text width <= box width
+    while (inner.scrollWidth > boxWidth && fs > 20) {
+      fs -= 1;
+      inner.style.fontSize = fs + 'px';
+    }
+    // Also try scaling up if text is much narrower than box (short names)
+    while (inner.scrollWidth < boxWidth * 0.88 && fs < window.innerWidth * 0.25) {
+      fs += 1;
+      inner.style.fontSize = fs + 'px';
+    }
+    // Step back one if we overshot
+    if (inner.scrollWidth > boxWidth) {
+      fs -= 1;
+      inner.style.fontSize = fs + 'px';
+    }
   });
 }
 
@@ -1599,7 +1658,7 @@ function doLogin() {
     document.getElementById('loginMbg').classList.remove('open');
     document.getElementById('navLbl').textContent = 'imranadmin';
     document.getElementById('navLbl').classList.add('admin');
-    document.getElementById('navAv').textContent = 'A';
+    document.getElementById('navAv').innerHTML = 'A';  // show A when admin logged in
     document.getElementById('adminBar').classList.add('show');
   } else {
     document.getElementById('loginErr').style.display = 'block';
@@ -1611,7 +1670,7 @@ function doLogout() {
   isAdmin = false; editMode = false;
   document.getElementById('navLbl').textContent = 'My Account';
   document.getElementById('navLbl').classList.remove('admin');
-  document.getElementById('navAv').textContent = 'S';
+  document.getElementById('navAv').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>';
   document.getElementById('adminBar').classList.remove('show');
   document.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
   document.getElementById('editBtn').textContent = '✎ Enable Editing';
