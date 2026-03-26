@@ -152,22 +152,22 @@ nav{
 ═══════════════════════════════════════════════════════════ */
 
 /* TEXT BOX — bounding box for brand + model text */
-	.hero-text-block{
-	  position:absolute;
-	  /* Text starts at 12% from top — brand name then giant model text */
-	  top:12%;
-	  left:5%;
-	  right:5%;
-	  height:45%;
-	  z-index:0; /* Lowered to be behind the car box (z-index: 2) */
-	  text-align:center;
-	  pointer-events:none;
-	  display:flex;
-	  flex-direction:column;
-	  align-items:center;
-	  justify-content:flex-start;
-	  overflow:hidden;
-	}
+.hero-text-block{
+  position:absolute;
+  /* Text starts at 8% from top — brand name then giant model text */
+  top:8%;
+  left:5%;
+  right:5%;
+  height:48%;
+  z-index:1; /* Behind the car (z-index:3) but above background */
+  text-align:center;
+  pointer-events:none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  overflow:hidden;
+}
 
 /* Brand name — sits just above the giant model text */
 .hero-make{
@@ -225,23 +225,21 @@ nav{
 }
 
 /* CAR BOX — bounding box wrapper for the car image */
-	.hero-car-box{
-	  position:absolute;
-	  /* Car box overlaps the lower 60% of the text block
-	     Text: top 12% height 45% = ends at 57%
-	     Car: top 20% bottom 10% = car sits at 20%-90% (Increased size)
-	     Overlap zone: 20%-57% = car roof cuts through middle of giant text
-	     bottom:10% leaves room for dots + buttons */
-	  left:2%;
-	  right:2%;
-	  top:20%;
-	  bottom:10%;
-	  z-index:2;
-	  display:flex;
-	  align-items:flex-end;
-	  justify-content:center;
-	  pointer-events:none;
-	}
+.hero-car-box{
+  position:absolute;
+  /* Car box: large, overlapping text block for dramatic effect
+     top:15% bottom:8% = car fills most of hero vertically
+     left:0% right:0% = full width for maximum size */
+  left:0%;
+  right:0%;
+  top:15%;
+  bottom:8%;
+  z-index:3; /* Above text (z-index:1) so car appears in front */
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  pointer-events:none;
+}
 
 /* Car image fills its bounding box, maintains aspect ratio */
 .hero-car{
@@ -295,7 +293,7 @@ nav{
   right:clamp(14px,3.5vw,48px);
   top:50%;
   transform:translateY(-50%);
-  z-index:4;
+  z-index:8; /* Above gallery panel (z-index:6) so specs always visible */
   text-align:right;
   pointer-events:none;
 }
@@ -370,16 +368,16 @@ nav{
 .h-ctas.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(10px)}
 
 /* Gallery panel */
-	.gallery-panel{
-	  position:absolute;left:0;right:0;bottom:0;z-index:8;
-	  background:rgba(238,243,247,0.97);backdrop-filter:blur(10px);
-	  padding:18px 40px 16px;
-	  transform:translateY(100%);
-	  transition:transform 0.5s cubic-bezier(0.77,0,0.18,1);
-	  border-top:1px solid rgba(91,155,191,0.15);
-	  max-height: 20%; /* Even lower to ensure specs are visible */
-	  overflow-y: auto;
-	}
+.gallery-panel{
+  position:absolute;left:0;right:0;bottom:0;z-index:6;
+  background:rgba(238,243,247,0.97);backdrop-filter:blur(10px);
+  padding:12px 40px 10px;
+  transform:translateY(100%);
+  transition:transform 0.5s cubic-bezier(0.77,0,0.18,1);
+  border-top:1px solid rgba(91,155,191,0.15);
+  max-height:22%; /* Compact panel — stays at bottom, never covers specs */
+  overflow-y:auto;
+}
 .gallery-panel.open{transform:translateY(0)}
 .gp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
 .gp-label{font-size:10px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:var(--text-muted)}
