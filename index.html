@@ -1369,7 +1369,18 @@ nav{
       <div class="mf"><label>Colour</label><input type="text" id="acColor" placeholder="Midnight Black"></div>
     </div>
     <div class="mf"><label>Range / Miles per charge (mi)</label><input type="text" id="acRange" placeholder="250"></div>
-    <div class="mf"><label>Gallery Images (Upload files or paste URLs)</label><input type="file" id="acGalleryFiles" accept="image/*" multiple style="margin-bottom:8px"><input type="text" id="acGallery" placeholder="Or paste comma-separated URLs: https://img1.jpg, https://img2.jpg"></div>
+    <div class="mf">
+      <label>Gallery Images (Interior/Extra Photos)</label>
+      <div class="upload-area" onclick="document.getElementById('galleryFileInput').click()" style="cursor:pointer;border:2px dashed #1a4d6b;border-radius:8px;padding:20px;text-align:center;background:#f9fafb;transition:all 0.2s;margin-bottom:12px">
+        <div style="font-size:28px">🖼️</div>
+        <p style="margin:8px 0 0;color:#1a4d6b;font-weight:600">Click to upload gallery photos</p>
+        <small style="color:#666">Select multiple interior/extra photos • Drag to reorder</small>
+        <input type="file" id="galleryFileInput" accept="image/*" multiple onchange="handleGalleryUpload()" style="display:none">
+      </div>
+      <div id="galleryManager" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
+      <input type="text" id="acGallery" placeholder="Or paste comma-separated URLs: https://img1.jpg, https://img2.jpg" style="margin-top:12px">
+      <small style="color:#666;display:block;margin-top:4px">💡 Tip: Drag images to reorder, uncheck to hide from product page</small>
+    </div>
     <div class="mf"><label>AutoTrader Link (product page button)</label><input type="text" id="acAt" placeholder="https://autotrader.co.uk/..."></div>
     <div class="mf"><label>Facebook Link (product page button)</label><input type="text" id="acFb" placeholder="https://facebook.com/..."></div>
     <div class="mf"><label>WhatsApp Link (product page button)</label><input type="text" id="acWa" placeholder="https://wa.me/447700900123?text=..."></div>
