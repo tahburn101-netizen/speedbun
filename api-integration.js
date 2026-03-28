@@ -101,3 +101,27 @@ async function markCarAsSold(carId, isSold) {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', loadCarsFromBackend);
+
+// Open admin dashboard
+function openAdminDashboard() {
+  window.location.href = 'https://speedbun-dash-nxdsrzs7.manus.space/';
+}
+
+// Check if user is admin and show admin button
+function checkAdminStatus() {
+  const adminBtn = document.getElementById('adminBtn');
+  if (!adminBtn) return;
+  
+  // Check if user is logged in and is admin
+  const isAdmin = localStorage.getItem('speedbun_is_admin') === 'true';
+  if (isAdmin) {
+    adminBtn.style.display = 'flex';
+  }
+}
+
+// Update initialization
+const originalInit = document.addEventListener;
+document.addEventListener('DOMContentLoaded', () => {
+  loadCarsFromBackend();
+  checkAdminStatus();
+});
