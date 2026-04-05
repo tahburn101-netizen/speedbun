@@ -245,10 +245,10 @@ nav{
 .hero-car-box{
   position:absolute;
   /* Car box: 70% wide, anchored to bottom just above the buttons */
-  left:15%;
-  right:15%;
-  top:48%;
-  bottom:14%;
+  left:10%;
+  right:10%;
+  top:30%;
+  bottom:12%;
   z-index:2;
   overflow:visible;
   display:flex;
@@ -1122,14 +1122,14 @@ nav{
   .h-arrow{font-size:26px;padding:6px}
   .btn-fill,.btn-outline{padding:11px 22px;font-size:12px}
   /* Keep hero car at 70% width on tablet */
-  .hero-car-box{left:15%;right:15%;top:38%;bottom:14%;overflow:visible}
+  .hero-car-box{left:10%;right:10%;top:28%;bottom:12%;overflow:visible}
 }
 @media(max-width:540px){
   .car-grid{grid-template-columns:1fr}
   .con-cards{grid-template-columns:1fr}
   .about-stats{grid-template-columns:1fr;gap:10px}
   /* Keep hero car at 70% width on mobile */
-  .hero-car-box{left:10%;right:10%;top:40%;bottom:14%;overflow:visible}
+  .hero-car-box{left:5%;right:5%;top:28%;bottom:12%;overflow:visible}
 }
 
 /* Image sizing for product pages */
@@ -1647,7 +1647,6 @@ nav{
     <p class="msub">Sign in to manage Speed Bun</p>
     <div class="mf"><label>Username</label><input type="text" id="uIn" placeholder="Username" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="mf"><label>Password</label><input type="password" id="pIn" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <div class="mf"><label>GitHub Token (for saving changes)</label><input type="password" id="ghTokenIn" placeholder="ghp_xxxxxxxxxxxx (optional)" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <p class="merr" id="loginErr">Incorrect username or password.</p>
     <button class="btn-fill" style="width:100%;padding:13px;margin-top:6px" onclick="doLogin()">Sign In</button>
   </div>
@@ -2411,7 +2410,7 @@ function openLogin() {
 async function doLogin() {
   const u = document.getElementById('uIn').value.trim();
   const p = document.getElementById('pIn').value;
-  const ghToken = document.getElementById('ghTokenIn').value.trim();
+  const ghToken = '';  // GitHub token no longer needed
   
   // Try Railway backend login first
   if (backendConnected) {
@@ -2458,7 +2457,7 @@ function onLoginSuccess(u) {
   document.getElementById('adminBar').classList.add('show');
   document.getElementById('uIn').value = '';
   document.getElementById('pIn').value = '';
-  document.getElementById('ghTokenIn').value = '';
+  // GitHub token field removed
   // Refresh views to show admin controls
   const currentPage = document.querySelector('.page.active');
   if (currentPage && currentPage.id === 'page-showroom') renderShowroom();
