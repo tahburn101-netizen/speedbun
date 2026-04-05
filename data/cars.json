@@ -1,0 +1,71 @@
+[
+  {
+    "id": 1,
+    "make": "VOLKSWAGEN",
+    "model": "GOLF",
+    "name": "Volkswagen Golf",
+    "variant": "2.0 TDI 150 Style 5dr DSG",
+    "year": "2021",
+    "miles": "124,300 mi",
+    "price": "\u00a310,995",
+    "fuel": "Diesel",
+    "trans": "Automatic",
+    "color": "White",
+    "accentColor": "#4a90b8",
+    "hp": "150",
+    "seats": "5",
+    "range": "N/A",
+    "desc": "High spec DSG Golf with ACC and Apple CarPlay",
+    "heroImg": "hero_images/vw-golf.png",
+    "imgs": [
+      "https://cdn.images.autoexposure.co.uk/AETA46135/AETV21991662_1.jpg"
+    ],
+    "createdAt": "2025-01-01T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "make": "BMW",
+    "model": "4 SERIES",
+    "name": "BMW 4 Series",
+    "variant": "430d xDrive M Sport 5dr Auto",
+    "year": "2016",
+    "miles": "117,000 mi",
+    "price": "\u00a310,495",
+    "fuel": "Diesel",
+    "trans": "Automatic",
+    "color": "Blue",
+    "accentColor": "#1a5276",
+    "hp": "258",
+    "seats": "5",
+    "range": "N/A",
+    "desc": "BMW 4 Series 430d xDrive M Sport with Professional Media",
+    "heroImg": "hero_images/bmw-4series.png",
+    "imgs": [
+      "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48128971_1.jpg"
+    ],
+    "createdAt": "2025-01-01T00:00:00Z"
+  },
+  {
+    "id": 3,
+    "make": "NISSAN",
+    "model": "370Z",
+    "name": "Nissan 370Z",
+    "variant": "3.7 V6 GT 3dr Auto",
+    "year": "2010",
+    "miles": "103,000 mi",
+    "price": "\u00a38,595",
+    "fuel": "Petrol",
+    "trans": "Automatic",
+    "color": "Black",
+    "accentColor": "#2c3e50",
+    "hp": "328",
+    "seats": "2",
+    "range": "N/A",
+    "desc": "Stunning 370Z V6 Auto with Rays alloys gleaming example",
+    "heroImg": "hero_images/nissan-370z.png",
+    "imgs": [
+      "https://cdn.images.autoexposure.co.uk/AETA46135/AETV20376297_1.jpg"
+    ],
+    "createdAt": "2025-01-01T00:00:00Z"
+  }
+]
