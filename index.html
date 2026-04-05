@@ -104,6 +104,22 @@ nav{
 }
 .social-bar svg{width:20px;height:20px;fill:currentColor}
 
+/* TikTok and Instagram buttons - match filled button theme */
+.social-bar a#sbTt,
+.social-bar a#sbIg{
+  background:var(--blue-deep);
+  color:#fff;
+  border:1.5px solid var(--blue-deep);
+  box-shadow:0 4px 18px rgba(26,77,107,0.28);
+}
+.social-bar a#sbTt:hover,
+.social-bar a#sbIg:hover{
+  background:var(--blue);
+  border-color:var(--blue);
+  transform:scale(1.12);
+  box-shadow:0 8px 24px rgba(91,155,191,0.4);
+}
+
 /* ═══════════════════════════════════════════════════════════
    PAGE SYSTEM
 ═══════════════════════════════════════════════════════════ */
@@ -229,13 +245,13 @@ nav{
   position:absolute;
   /* Car box overlaps the lower 60% of the text block
      Text: top 12% height 45% = ends at 57%
-     Car: top 30% bottom 16% = car sits at 30%-84%
-     Overlap zone: 30%-57% = car roof cuts through middle of giant text
-     bottom:16% leaves room for dots + buttons */
+     Car: top 28% bottom 12% = car sits at 28%-88%
+     Overlap zone: 28%-57% = car roof cuts through middle of giant text
+     bottom:12% leaves room for dots + buttons */
   left:5%;
   right:5%;
-  top:30%;
-  bottom:16%;
+  top:28%;
+  bottom:12%;
   z-index:2;
   overflow:visible;
   display:flex;
@@ -1165,7 +1181,7 @@ nav{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-15deg);
-  width: min(420px, 72%);
+  width: min(357px, 61%);
   pointer-events: none;
   filter: drop-shadow(0 4px 24px rgba(0,0,0,0.6));
   z-index: 2;
@@ -1461,7 +1477,6 @@ nav{
       <div class="h-ctas" id="heroCtas">
         <button class="btn-fill" onclick="goPage('showroom')">View Showroom</button>
         <button class="btn-outline" onclick="openCurrentDetail()">Details</button>
-        <button class="btn-outline" onclick="openCurrentGallery()">&#128247; Photos</button>
       </div>
       <div class="gallery-panel" id="galleryPanel">
         <div class="gp-header">
