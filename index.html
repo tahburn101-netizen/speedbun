@@ -2522,6 +2522,9 @@ function showPage(pageId) {
   const tabMap = {home:'t-home',showroom:'t-showroom',enquiry:'t-enquiry',contact:'t-contact',detail:'t-showroom'};
   const tabId = tabMap[pageId];
   if (tabId) document.getElementById(tabId).classList.add('active');
+  // Show social sidebar only on home page
+  const socialBar = document.querySelector('.social-bar');
+  if (socialBar) socialBar.style.display = (pageId === 'home') ? 'flex' : 'none';
   window.scrollTo(0, 0);
   // Trigger reveal after a brief delay to allow DOM to settle
   checkReveal();
