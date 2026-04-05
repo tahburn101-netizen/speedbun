@@ -245,13 +245,13 @@ nav{
   position:absolute;
   /* Car box: 70% width centred, bottom-anchored
      left:15% right:15% = 70% width
-     bottom:8% top:20% = occupies 72% of hero height, car image constrained inside */
+     bottom:8% = car sits near the bottom of the hero */
   left:15%;
   right:15%;
   bottom:8%;
-  top:20%;
+  top:0;
   z-index:2;
-  overflow:hidden;
+  overflow:visible;
   display:flex;
   align-items:flex-end;
   justify-content:center;
@@ -260,11 +260,12 @@ nav{
 
 /* Car image fills its bounding box, maintains aspect ratio */
 .hero-car{
-  /* Fill 100% of the box width, height auto-scales.
-     The box is 70% wide and bottom-anchored so the car sits at the bottom. */
+  /* Width: 100% of the 70%-wide box = 70% of hero width
+     Height: constrained to 30% of viewport height so it sits in the lower third */
   width:100%;
   height:auto;
   max-width:100%;
+  max-height:30vh;
   object-fit:contain;
   object-position:center bottom;
   filter:drop-shadow(0 16px 32px rgba(26,77,107,0.15));
@@ -273,8 +274,6 @@ nav{
   transition:transform 0.35s cubic-bezier(0.34,1.4,0.64,1);
   transform-origin:center bottom;
   display:block;
-  /* Limit height so car doesn't overflow above the text */
-  max-height:100%;
 }
 .hero-car.featured{
   transform:scale(1.08) translateY(-4%);
@@ -1121,14 +1120,16 @@ nav{
   .h-arrow{font-size:26px;padding:6px}
   .btn-fill,.btn-outline{padding:11px 22px;font-size:12px}
   /* Keep hero car at 70% width on tablet */
-  .hero-car-box{left:15%;right:15%;bottom:8%;top:22%;overflow:hidden}
+  .hero-car-box{left:15%;right:15%;bottom:8%;top:0;overflow:visible}
+  .hero-car{max-height:30vh}
 }
 @media(max-width:540px){
   .car-grid{grid-template-columns:1fr}
   .con-cards{grid-template-columns:1fr}
   .about-stats{grid-template-columns:1fr;gap:10px}
   /* Keep hero car at 70% width on mobile */
-  .hero-car-box{left:10%;right:10%;bottom:8%;top:25%;overflow:hidden}
+  .hero-car-box{left:10%;right:10%;bottom:8%;top:0;overflow:visible}
+  .hero-car{max-height:28vh}
 }
 
 /* Image sizing for product pages */
