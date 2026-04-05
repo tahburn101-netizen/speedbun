@@ -245,11 +245,11 @@ nav{
 /* CAR BOX — bounding box wrapper for the car image */
 .hero-car-box{
   position:absolute;
-  /* Car box: 70% wide, bottom sits right above the carousel dots */
-  left:10%;
-  right:10%;
-  top:15%;
-  bottom:18%;
+  /* Car box: 20% bigger, shifted lower */
+  left:2%;
+  right:2%;
+  top:22%;
+  bottom:4%;
   z-index:2;
   overflow:hidden;
   display:flex;
@@ -867,7 +867,7 @@ nav{
 /* ═══════════════════════════════════════════════════════════
    SHOWROOM
 ═══════════════════════════════════════════════════════════ */
-.sw-wrap{padding:calc(var(--nav-h) + 28px) 52px 44px}
+.sw-wrap{padding:calc(var(--nav-h) + 40px) 52px 44px}
 .page-heading{
   font-family:'Barlow Condensed',sans-serif;
   font-size:clamp(32px,5vw,52px);font-weight:900;font-style:italic;
@@ -1101,7 +1101,7 @@ nav{
   .nav-right{margin-left:auto}
   .social-bar{display:none}
   .about-section,.reviews-section{padding:36px 24px;overflow:visible}
-  .sw-wrap,.enq-wrap,.con-wrap{padding:calc(var(--nav-h) + 18px) 18px 28px}
+  .sw-wrap,.enq-wrap,.con-wrap{padding:calc(var(--nav-h) + 32px) 18px 28px}
   .det-info{grid-template-columns:1fr;padding:18px 16px 36px}
   .about-stats{grid-template-columns:repeat(3,1fr);gap:11px}
   .stat-num{font-size:30px}
@@ -1120,15 +1120,15 @@ nav{
   .specs-title{font-size:7px}
   .h-arrow{font-size:26px;padding:6px}
   .btn-fill,.btn-outline{padding:11px 22px;font-size:12px}
-  /* Keep hero car at 70% width on tablet */
-  .hero-car-box{left:10%;right:10%;top:15%;bottom:18%;overflow:hidden}
+  /* Hero car: 20% bigger, lower on tablet */
+  .hero-car-box{left:2%;right:2%;top:22%;bottom:4%;overflow:hidden}
 }
 @media(max-width:540px){
   .car-grid{grid-template-columns:1fr}
   .con-cards{grid-template-columns:1fr}
   .about-stats{grid-template-columns:1fr;gap:10px}
-  /* Keep hero car at 70% width on mobile */
-  .hero-car-box{left:5%;right:5%;top:15%;bottom:18%;overflow:hidden}
+  /* Hero car: 20% bigger, lower on mobile */
+  .hero-car-box{left:2%;right:2%;top:22%;bottom:4%;overflow:hidden}
 }
 
 /* Image sizing for product pages */
@@ -1503,7 +1503,7 @@ nav{
         <div class="about-stats">
           <div class="stat-card reveal reveal-delay-1"><div class="stat-num" id="statCars" data-editable onclick="adminEditText(this)">50+</div><div class="stat-lbl">Cars in Stock</div></div>
           <div class="stat-card reveal reveal-delay-2"><div class="stat-num" id="statCustomers" data-editable onclick="adminEditText(this)">500+</div><div class="stat-lbl">Happy Customers</div></div>
-          <div class="stat-card reveal reveal-delay-3"><div class="stat-num" id="statYears" data-editable onclick="adminEditText(this)">10+</div><div class="stat-lbl">Years Serving Birmingham</div></div>
+          <div class="stat-card reveal reveal-delay-3"><div class="stat-num" id="statYears" data-editable onclick="adminEditText(this)">9+</div><div class="stat-lbl">Years Serving Birmingham</div></div>
         </div>
       </div>
     </div>
@@ -1614,7 +1614,7 @@ nav{
         <div class="con-card reveal reveal-delay-1">
           <div class="con-icon">&#9993;</div>
           <h3>Email</h3>
-          <p id="cEmail" data-editable onclick="adminEditText(this)">tahmid772011@gmail.com<br>Reply within 24hrs</p>
+          <p id="cEmail" data-editable onclick="adminEditText(this)">tahmid77@gmail.com<br>Reply within 24hrs</p>
         </div>
         <div class="con-card reveal reveal-delay-2">
           <div class="con-icon">&#128205;</div>
@@ -2498,7 +2498,7 @@ function doLogout() {
 // ═══════════════════════════════════════════════════════════
 // EDITING
 // ═══════════════════════════════════════════════════════════
-function toggleEdit() {
+async function toggleEdit() {
   if (!isAdmin) return;
   editMode = !editMode;
   const btn = document.getElementById('editBtn');
@@ -2514,10 +2514,12 @@ function toggleEdit() {
     el.style.background = editMode ? 'rgba(231,76,60,0.05)' : '';
   });
   if (!editMode) {
-    // Save immediately to localStorage and backend
+    // Save to localStorage first
     localSave();
-    saveToBackend();
-    showSaveToast('✓ Text changes saved');
+    // Show saving indicator
+    showSaveToast('⏳ Saving...');
+    // Await backend save so we know if it succeeded
+    await saveToBackend();
   } else {
     showSaveToast('✎ Click any text to edit it directly');
   }
