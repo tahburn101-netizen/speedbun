@@ -826,6 +826,8 @@ nav{
 .featured-inner{max-width:1100px;margin:0 auto;text-align:center}
 .featured-inner .section-heading{color:var(--blue-deep)}
 .featured-inner .section-tag{color:var(--blue)}
+.sold-inner .section-heading{color:var(--blue-deep)}
+.sold-inner .about-text{color:var(--blue);opacity:0.8}
 .featured-grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -2751,7 +2753,7 @@ function renderFeatured() {
   grid.innerHTML = featured.map(c => `
     <div class="feat-card reveal" onclick="openDetail(${c.id})">
       <div class="feat-img">
-        <img src="${c.heroImg}" alt="${c.name}" loading="lazy">
+        <img src="${c.imgs && c.imgs.length ? c.imgs[0] : c.heroImg}" alt="${c.name}" loading="lazy">
       </div>
       <div class="feat-body">
         <div class="feat-name">${c.name}</div>
@@ -2776,7 +2778,7 @@ function renderSoldCarousel() {
   const carsSold = cars.filter(c => c.sold);
   const allSold = [...soldCars, ...carsSold.map(c => ({
     id: 'car-' + c.id,
-    img: c.heroImg,
+    img: c.imgs && c.imgs.length ? c.imgs[0] : c.heroImg,
     name: c.name
   }))];
   
@@ -2804,7 +2806,7 @@ function renderSoldCarousel() {
 }
 
 function soldGo(d) {
-  const allSold = [...soldCars, ...cars.filter(c => c.sold).map(c => ({id:'car-'+c.id,img:c.heroImg,name:c.name}))];
+  const allSold = [...soldCars, ...cars.filter(c => c.sold).map(c => ({id:'car-'+c.id,img:c.imgs&&c.imgs.length?c.imgs[0]:c.heroImg,name:c.name}))];
   soldIdx = (soldIdx + d + allSold.length) % allSold.length;
   updateSoldCarousel();
 }
@@ -2831,10 +2833,10 @@ function renderShowroom() {
   grid.innerHTML = showCars.map(c => `
     <div class="cc" onclick="openDetail(${c.id})" onmousemove="tiltCard(event,this)" onmouseleave="resetTilt(this)">
       <div class="cc-img-wrap" id="ccw-${c.id}">
-        <img src="${c.heroImg}" alt="${c.name}" id="cci-${c.id}" loading="lazy">
+        <img src="${c.imgs && c.imgs.length ? c.imgs[0] : c.heroImg}" alt="${c.name}" id="cci-${c.id}" loading="lazy">
         <button class="cc-img-nav cc-img-prev" onclick="event.stopPropagation();ccNav(${c.id},-1)">&#8249;</button>
         <button class="cc-img-nav cc-img-next" onclick="event.stopPropagation();ccNav(${c.id},1)">&#8250;</button>
-        <div class="cc-photo-badge">&#128247; ${c.imgs ? c.imgs.length + 1 : 1}</div>
+        <div class="cc-photo-badge">&#128247; ${c.imgs ? c.imgs.length : 1}</div>
         ${isAdmin ? `<button class="cc-edit-btn" onclick="event.stopPropagation();openEditCar(${c.id})" style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.7);color:#fff;border:none;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer;z-index:5">&#9998; Edit</button>` : ''}
       </div>
       <div class="cc-body">
@@ -2852,8 +2854,8 @@ function renderShowroom() {
 let ccImgIdx = {};
 function ccNav(id, d) {
   const c = cars.find(x => x.id === id);
-  if (!c || !c.imgs) return;
-  const allImgs = [c.heroImg, ...c.imgs];
+  if (!c || !c.imgs || !c.imgs.length) return;
+  const allImgs = c.imgs; // Use only real photos in showroom cards
   ccImgIdx[id] = ((ccImgIdx[id] || 0) + d + allImgs.length) % allImgs.length;
   const img = document.getElementById('cci-' + id);
   if (img) img.src = allImgs[ccImgIdx[id]];
@@ -2888,7 +2890,7 @@ function openDetail(id) {
     ['Seats', c.seats],
   ].map(([k,v]) => `<div class="det-spec-row"><span class="det-spec-key">${k}</span><span class="det-spec-val">${v}</span></div>`).join('');
   
-  const allImgs = [c.heroImg, ...(c.imgs || [])];
+  const allImgs = c.imgs && c.imgs.length ? c.imgs : [c.heroImg]; // Use real photos only in detail page
   
   // Build carousel slides (3 per page)
   const slidesPerPage = 3;
@@ -2982,15 +2984,15 @@ function detCarouselSelect(carId, idx) {
   detCurrentImgIdx = idx;
   const c = cars.find(x => x.id === carId);
   if (!c) return;
-  const allImgs = [c.heroImg, ...(c.imgs || [])];
+  const allImgs = c.imgs && c.imgs.length ? c.imgs : [c.heroImg]; // Use real photos only in detail page
   
   // Update main hero image with overlay effect
   const heroArea = document.getElementById('detHeroArea');
   const overlayImg = document.getElementById('detOverlayImg');
   const mainImg = document.getElementById('detMainImg');
   
-  if (idx === 0) {
-    // Show the hero car image
+  if (false) {
+    // (hero car image no longer shown in detail page - using real photos only)
     if (heroArea) heroArea.classList.remove('overlay-active');
     if (overlayImg) { overlayImg.classList.remove('visible'); overlayImg.src = ''; }
     if (mainImg) mainImg.src = allImgs[0];
