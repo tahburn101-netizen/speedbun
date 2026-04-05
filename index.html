@@ -2392,7 +2392,7 @@ function adminEditText(el) {
 // ═══════════════════════════════════════════════════════════
 function showPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-  document.getElementById('page-' + pageId).style.display = 'block';
+  document.getElementById('page-' + pageId).style.display = 'flex';
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   const tabMap = {home:'t-home',showroom:'t-showroom',enquiry:'t-enquiry',contact:'t-contact',detail:'t-showroom'};
   const tabId = tabMap[pageId];
@@ -3113,6 +3113,9 @@ window.addEventListener('resize', () => { fitHeroText(); });
 async function init() {
   // Load data from backend (falls back to localStorage)
   await loadFromBackend();
+  
+  // Show home page
+  showPage('home');
   
   // Build all sections
   buildHero();
