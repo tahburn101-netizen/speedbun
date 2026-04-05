@@ -1639,6 +1639,7 @@ nav{
     <p class="msub">Sign in to manage Speed Bun</p>
     <div class="mf"><label>Username</label><input type="text" id="uIn" placeholder="Username" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="mf"><label>Password</label><input type="password" id="pIn" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="mf"><label>GitHub Token (for saving changes)</label><input type="password" id="ghTokenIn" placeholder="ghp_xxxxxxxxxxxx (optional)" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <p class="merr" id="loginErr">Incorrect username or password.</p>
     <button class="btn-fill" style="width:100%;padding:13px;margin-top:6px" onclick="doLogin()">Sign In</button>
   </div>
@@ -2402,6 +2403,7 @@ function openLogin() {
 async function doLogin() {
   const u = document.getElementById('uIn').value.trim();
   const p = document.getElementById('pIn').value;
+  const ghToken = document.getElementById('ghTokenIn').value.trim();
   
   // Try Railway backend login first
   if (backendConnected) {
@@ -2410,6 +2412,7 @@ async function doLogin() {
       if (result && result.ok && result.token) {
         adminToken = result.token;
         localStorage.setItem('sb_adminToken', adminToken);
+        if (ghToken) localStorage.setItem('speedbun_admin_token', ghToken);
         onLoginSuccess(u);
         return;
       } else {
@@ -2430,6 +2433,7 @@ async function doLogin() {
   if (u === storedUser && p === storedPass) {
     adminToken = 'speedbun_admin_' + storedPass;
     localStorage.setItem('sb_adminToken', adminToken);
+    if (ghToken) localStorage.setItem('speedbun_admin_token', ghToken);
     onLoginSuccess(u);
   } else {
     document.getElementById('loginErr').style.display = 'block';
@@ -2446,6 +2450,7 @@ function onLoginSuccess(u) {
   document.getElementById('adminBar').classList.add('show');
   document.getElementById('uIn').value = '';
   document.getElementById('pIn').value = '';
+  document.getElementById('ghTokenIn').value = '';
   // Refresh views to show admin controls
   const currentPage = document.querySelector('.page.active');
   if (currentPage && currentPage.id === 'page-showroom') renderShowroom();
