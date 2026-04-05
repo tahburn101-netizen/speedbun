@@ -2865,6 +2865,22 @@ function openDetail(id) {
   
   const allImgs = [c.heroImg, ...(c.imgs || [])];
   
+  // Build carousel slides (3 per page)
+  const slidesPerPage = 3;
+  const totalSlides = allImgs.length;
+  const totalPages = Math.ceil(totalSlides / slidesPerPage);
+  let detCarPage = 0;
+  
+  const carouselSlides = allImgs.map((img, i) => 
+    `<div class="det-carousel-slide${i===0?' active':''}" onclick="detCarouselSelect(${id},${i})" data-idx="${i}">
+      <img src="${img}" alt="${c.name} ${i+1}" loading="lazy">
+    </div>`
+  ).join('');
+  
+  const carouselDots = Array.from({length: totalPages}, (_, i) =>
+    `<div class="det-car-dot${i===0?' active':''}" onclick="detCarouselPage(${i})"></div>`
+  ).join('');
+
   document.getElementById('detWrap').innerHTML = `
     <div class="det-header">
       <button class="det-back-btn" onclick="goPage('showroom')">&#8592; Back to Showroom</button>
@@ -2872,12 +2888,25 @@ function openDetail(id) {
       <div class="det-variant">${c.variant || ''}</div>
     </div>
     <div class="det-layout">
-      <div class="det-gallery">
-        <div class="det-main-img-wrap" id="detMainWrap">
-          <img class="det-main-img" id="detMainImg" src="${allImgs[0]}" alt="${c.name}">
+      <div>
+        <div class="det-hero-area" id="detHeroArea">
+          <div class="det-hero-bg-text">${c.model || c.name}</div>
+          <img class="det-hero-car-img" id="detMainImg" src="${allImgs[0]}" alt="${c.name}">
+          <img class="det-hero-overlay-img" id="detOverlayImg" src="">
+          <div class="det-hero-overlay-gradient"></div>
+          <button class="det-overlay-close" onclick="detCloseOverlay()">&#215;</button>
         </div>
-        <div class="det-thumbs" id="detThumbs">
-          ${allImgs.map((img, i) => `<div class="det-thumb${i===0?' active':''}" onclick="detSelectImg(${id},${i})"><img src="${img}" alt="${c.name} ${i+1}" loading="lazy"></div>`).join('')}
+        <div class="det-carousel-area">
+          <div class="det-carousel-track-wrap">
+            <div class="det-carousel-track" id="detCarTrack">
+              ${carouselSlides}
+            </div>
+          </div>
+          <div class="det-carousel-nav">
+            <button class="det-car-nav-btn" id="detCarPrev" onclick="detCarouselNav(-1)">&#8249;</button>
+            <div class="det-carousel-dots" id="detCarDots">${carouselDots}</div>
+            <button class="det-car-nav-btn" id="detCarNext" onclick="detCarouselNav(1)">&#8250;</button>
+          </div>
         </div>
       </div>
       <div class="det-specs-panel">
@@ -2918,12 +2947,88 @@ function openDetail(id) {
   showPage('detail');
 }
 
-function detSelectImg(carId, idx) {
+let detCurrentCarId = null;
+let detCurrentImgIdx = 0;
+let detCurrentPage = 0;
+const DET_SLIDES_PER_PAGE = 3;
+
+function detCarouselSelect(carId, idx) {
+  detCurrentCarId = carId;
+  detCurrentImgIdx = idx;
   const c = cars.find(x => x.id === carId);
   if (!c) return;
   const allImgs = [c.heroImg, ...(c.imgs || [])];
-  document.getElementById('detMainImg').src = allImgs[idx];
-  document.querySelectorAll('.det-thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
+  
+  // Update main hero image with overlay effect
+  const heroArea = document.getElementById('detHeroArea');
+  const overlayImg = document.getElementById('detOverlayImg');
+  const mainImg = document.getElementById('detMainImg');
+  
+  if (idx === 0) {
+    // Show the hero car image
+    if (heroArea) heroArea.classList.remove('overlay-active');
+    if (overlayImg) { overlayImg.classList.remove('visible'); overlayImg.src = ''; }
+    if (mainImg) mainImg.src = allImgs[0];
+  } else {
+    // Show gallery photo as overlay
+    if (overlayImg) { overlayImg.src = allImgs[idx]; overlayImg.classList.add('visible'); }
+    if (heroArea) heroArea.classList.add('overlay-active');
+  }
+  
+  // Update active slide
+  document.querySelectorAll('.det-carousel-slide').forEach((s, i) => s.classList.toggle('active', i === idx));
+  
+  // Navigate to the page containing this slide
+  const page = Math.floor(idx / DET_SLIDES_PER_PAGE);
+  detCarouselGoPage(page);
+}
+
+function detCloseOverlay() {
+  const heroArea = document.getElementById('detHeroArea');
+  const overlayImg = document.getElementById('detOverlayImg');
+  if (heroArea) heroArea.classList.remove('overlay-active');
+  if (overlayImg) { overlayImg.classList.remove('visible'); overlayImg.src = ''; }
+  // Reset to first slide
+  document.querySelectorAll('.det-carousel-slide').forEach((s, i) => s.classList.toggle('active', i === 0));
+  detCurrentImgIdx = 0;
+}
+
+function detCarouselGoPage(page) {
+  const track = document.getElementById('detCarTrack');
+  if (!track) return;
+  const slides = track.querySelectorAll('.det-carousel-slide');
+  const totalPages = Math.ceil(slides.length / DET_SLIDES_PER_PAGE);
+  detCurrentPage = Math.max(0, Math.min(page, totalPages - 1));
+  
+  // Calculate slide width (33.33% of track width)
+  const slideWidth = track.parentElement.offsetWidth / DET_SLIDES_PER_PAGE;
+  track.style.transform = `translateX(-${detCurrentPage * slideWidth * DET_SLIDES_PER_PAGE}px)`;
+  
+  // Update dots
+  document.querySelectorAll('.det-car-dot').forEach((d, i) => d.classList.toggle('active', i === detCurrentPage));
+  
+  // Update nav buttons
+  const prev = document.getElementById('detCarPrev');
+  const next = document.getElementById('detCarNext');
+  if (prev) prev.disabled = detCurrentPage === 0;
+  if (next) next.disabled = detCurrentPage >= totalPages - 1;
+}
+
+function detCarouselNav(dir) {
+  const track = document.getElementById('detCarTrack');
+  if (!track) return;
+  const slides = track.querySelectorAll('.det-carousel-slide');
+  const totalPages = Math.ceil(slides.length / DET_SLIDES_PER_PAGE);
+  detCarouselGoPage(detCurrentPage + dir);
+}
+
+function detCarouselPage(page) {
+  detCarouselGoPage(page);
+}
+
+// Legacy function kept for compatibility
+function detSelectImg(carId, idx) {
+  detCarouselSelect(carId, idx);
 }
 
 // ═══════════════════════════════════════════════════════════
