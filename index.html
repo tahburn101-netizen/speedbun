@@ -277,32 +277,32 @@ nav{
 }
 /* Car slide animations */
 .hero-car.slide-in-right{
-  animation:carInRight 0.55s cubic-bezier(0.22,1,0.36,1) none;
+  animation:carInRight 0.52s cubic-bezier(0.22,1,0.36,1) both;
 }
 .hero-car.slide-in-left{
-  animation:carInLeft 0.55s cubic-bezier(0.22,1,0.36,1) none;
+  animation:carInLeft 0.52s cubic-bezier(0.22,1,0.36,1) both;
 }
 .hero-car.slide-out-left{
-  animation:carOutLeft 0.38s cubic-bezier(0.55,0,1,0.45) forwards;
+  animation:carOutLeft 0.35s cubic-bezier(0.55,0,1,0.45) forwards;
 }
 .hero-car.slide-out-right{
-  animation:carOutRight 0.38s cubic-bezier(0.55,0,1,0.45) forwards;
+  animation:carOutRight 0.35s cubic-bezier(0.55,0,1,0.45) forwards;
 }
 @keyframes carInRight{
-  from{transform:translateX(120%) scale(0.9);opacity:0}
-  to{transform:translateX(0) scale(1);opacity:1}
+  from{transform:translateX(120%);opacity:0}
+  to{transform:translateX(0);opacity:1}
 }
 @keyframes carInLeft{
-  from{transform:translateX(-120%) scale(0.9);opacity:0}
-  to{transform:translateX(0) scale(1);opacity:1}
+  from{transform:translateX(-120%);opacity:0}
+  to{transform:translateX(0);opacity:1}
 }
 @keyframes carOutLeft{
-  from{transform:translateX(0) scale(1);opacity:1}
-  to{transform:translateX(-120%) scale(0.9);opacity:0}
+  from{opacity:1}
+  to{transform:translateX(-120%);opacity:0}
 }
 @keyframes carOutRight{
-  from{transform:translateX(0) scale(1);opacity:1}
-  to{transform:translateX(120%) scale(0.9);opacity:0}
+  from{opacity:1}
+  to{transform:translateX(120%);opacity:0}
 }
 
 /* Specs panel — hidden by default, slides in from right when gallery opens */
@@ -1118,21 +1118,30 @@ nav{
   .specs-title{font-size:7px}
   .h-arrow{font-size:26px;padding:6px}
   .btn-fill,.btn-outline{padding:11px 22px;font-size:12px}
-  /* Hero car: 20% bigger, lower on tablet */
-  .hero-car-box{left:0;right:0;top:25%;bottom:2%;overflow:hidden}
-  .hero-bg-text{font-size:24vw}
-  .hero-text-block{top:15%}
+  /* Hero tablet: balanced layout */
+  .hero-car-box{left:0;right:0;top:28%;bottom:4%;overflow:hidden}
+  .hero-bg-text{font-size:22vw}
+  .hero-text-block{top:12%}
 }
 @media(max-width:540px){
   .car-grid{grid-template-columns:1fr}
   .con-cards{grid-template-columns:1fr}
   .about-stats{grid-template-columns:1fr;gap:10px}
-  /* Hero car: smaller and higher on mobile */
-  .hero-car-box{left:5%;right:5%;top:15%;bottom:25%;overflow:hidden}
-  .hero-bg-text{font-size:28vw}
-  .hero-text-block{top:10%}
-  .h-ctas{bottom:20px}
-  .h-dots{bottom:65px}
+  /* Hero mobile: optimised layout - car fills lower 60%, text sits top 35% */
+  .home-hero{min-height:420px}
+  .hero-text-block{top:8%;height:38%}
+  .hero-car-box{left:0;right:0;top:30%;bottom:8%;overflow:hidden}
+  .hero-bg-text{font-size:26vw;line-height:0.9}
+  .hero-make{font-size:clamp(10px,3.5vw,18px);letter-spacing:0.28em}
+  .hero-specs{right:4px;top:auto;bottom:60px;flex-direction:row;gap:10px;background:rgba(238,243,247,0.85);padding:6px 10px;border-radius:10px}
+  .spec-item{align-items:center}
+  .spec-num{font-size:13px}
+  .spec-lbl,.spec-unit{font-size:7px}
+  .specs-title{display:none}
+  .h-ctas{bottom:16px;gap:8px}
+  .btn-fill,.btn-outline{padding:9px 16px;font-size:11px;letter-spacing:0.1em}
+  .h-dots{bottom:56px}
+  .h-dot{width:6px;height:6px}
   .social-bar{display:none !important}
   /* Increased mobile home page padding */
   .about-section,.reviews-section{padding:52px 24px;overflow:visible}
@@ -2664,7 +2673,11 @@ function applyCarTransform(img, i) {
   const c = activeCars[i];
   if (!c || !img) return;
   const yOff = c.yOffset || '';
-  const scale = c.heroScale ? c.heroScale : (i === 0 ? 1.4 : 1.3);
+  // Use smaller scale on mobile for better fit
+  const isMobile = window.innerWidth <= 540;
+  const isTablet = window.innerWidth <= 900;
+  const baseScale = c.heroScale ? c.heroScale : (i === 0 ? 1.4 : 1.3);
+  const scale = isMobile ? Math.min(baseScale, 1.1) : (isTablet ? Math.min(baseScale, 1.2) : baseScale);
   if (yOff) {
     img.style.transform = `scale(${scale}) translateY(${yOff})`;
   } else if (i === 0) {
@@ -2689,7 +2702,8 @@ function applyHeroCarTransforms() {
 
 function heroGo(d) {
   if (galOpen) return;
-  const activeCars = cars.filter(c => !c.sold && !c.excludeFromHero);
+  const activeCars = cars.filter(c => !c.sold && !c.excludeFromHero)
+    .sort((a, b) => (a.heroOrder ?? 999) - (b.heroOrder ?? 999));
   const newIdx = (hi + d + activeCars.length) % activeCars.length;
   heroSet(newIdx, d);
 }
@@ -2718,14 +2732,15 @@ function heroSet(newIdx, dir) {
   void newBgt.offsetWidth; void newMake.offsetWidth;
   newBgt.classList.add('enter-down'); newMake.classList.add('enter-down');
   newCar.classList.remove('slide-in-right', 'slide-in-left');
+  // Apply correct per-car scale BEFORE animation so car enters at right size
+  applyCarTransform(newCar, newIdx);
   void newCar.offsetWidth;
   const inClass = direction > 0 ? 'slide-in-right' : 'slide-in-left';
   newCar.classList.add(inClass);
-  // Apply per-car transform as soon as slide-in animation ends
+  // Remove animation class once done so CSS transition can take over
   const onAnimEnd = () => {
     newCar.removeEventListener('animationend', onAnimEnd);
     newCar.classList.remove('slide-in-right', 'slide-in-left');
-    applyCarTransform(newCar, newIdx);
   };
   newCar.addEventListener('animationend', onAnimEnd);
   document.querySelectorAll('.h-dot').forEach((d, j) => d.classList.toggle('active', j === newIdx));
@@ -2744,7 +2759,8 @@ function heroSet(newIdx, dir) {
 
 function fitHeroText() {
   const boxWidth = window.innerWidth * 0.90;
-  cars.filter(c => !c.sold && !c.excludeFromHero).forEach((c, i) => {
+  cars.filter(c => !c.sold && !c.excludeFromHero)
+    .sort((a, b) => (a.heroOrder ?? 999) - (b.heroOrder ?? 999)).forEach((c, i) => {
     const inner = document.getElementById('hbgt-' + i);
     if (!inner) return;
     let fs = window.innerWidth * 0.18;
@@ -2756,7 +2772,8 @@ function fitHeroText() {
 }
 
 function updateBtnColour(idx) {
-  const activeCars = cars.filter(c => !c.sold && !c.excludeFromHero);
+  const activeCars = cars.filter(c => !c.sold && !c.excludeFromHero)
+    .sort((a, b) => (a.heroOrder ?? 999) - (b.heroOrder ?? 999));
   const c = activeCars[idx];
   if (!c) return;
   const col = c.accentColor || '#e74c3c';
@@ -2776,12 +2793,14 @@ function stopAuto() {
 }
 
 function openCurrentDetail() {
-  const activeCars = cars.filter(c => !c.sold && !c.excludeFromHero);
+  const activeCars = cars.filter(c => !c.sold && !c.excludeFromHero)
+    .sort((a, b) => (a.heroOrder ?? 999) - (b.heroOrder ?? 999));
   if (activeCars[hi]) openDetail(activeCars[hi].id);
 }
 
 function openCurrentGallery() {
-  const activeCars = cars.filter(c => !c.sold && !c.excludeFromHero);
+  const activeCars = cars.filter(c => !c.sold && !c.excludeFromHero)
+    .sort((a, b) => (a.heroOrder ?? 999) - (b.heroOrder ?? 999));
   if (activeCars[hi]) toggleGallery(activeCars[hi].id);
 }
 
@@ -3473,7 +3492,7 @@ document.addEventListener('DOMContentLoaded', () => {
     p.addEventListener('scroll', checkReveal);
   });
 });
-window.addEventListener('resize', () => { fitHeroText(); });
+window.addEventListener('resize', () => { fitHeroText(); applyHeroCarTransforms(); });
 
 // ═══════════════════════════════════════════════════════════
 // INIT
