@@ -2207,7 +2207,10 @@ async function apiDeleteAuth(path) {
   }
 }
 // Map backend snake_case car fields to frontend camelCase
+// Merges with INITIAL_CARS defaults so heroOrder/yOffset/heroScale/excludeFromHero are always preserved
 function mapCar(c) {
+  // Find matching INITIAL_CARS entry by id to get positioning defaults
+  const def = INITIAL_CARS.find(ic => ic.id == c.id) || {};
   return {
     id: c.id,
     make: (c.make||'').toUpperCase(),
@@ -2224,7 +2227,7 @@ function mapCar(c) {
     seats: c.seats||'5',
     range: c.range_mi||c.range||'N/A',
     desc: c.desc||'',
-    heroImg: c.hero_img||c.heroImg||'hero_images/vw-golf.png',
+    heroImg: c.hero_img||c.heroImg||def.heroImg||'hero_images/vw-golf.png',
     imgs: Array.isArray(c.imgs) ? c.imgs : [],
     at: c.at_link||c.at||'#',
     fb: c.fb_link||c.fb||'#',
@@ -2232,8 +2235,12 @@ function mapCar(c) {
     ig: c.ig_link||c.ig||'#',
     tt: siteSettings.tt||'#',
     sold: !!c.sold,
-    excludeFromHero: !!c.excludeFromHero,
-    accentColor: c.accentColor||'#4a90b8',
+    // Always use INITIAL_CARS values for hero display properties
+    excludeFromHero: def.excludeFromHero !== undefined ? !!def.excludeFromHero : !!c.excludeFromHero,
+    heroOrder: def.heroOrder !== undefined ? def.heroOrder : (c.heroOrder || 999),
+    yOffset: def.yOffset || c.yOffset || '',
+    heroScale: def.heroScale || c.heroScale || null,
+    accentColor: c.accentColor||def.accentColor||'#4a90b8',
     sort_order: c.sort_order||0
   };
 }
