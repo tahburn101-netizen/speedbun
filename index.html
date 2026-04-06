@@ -277,10 +277,10 @@ nav{
 }
 /* Car slide animations */
 .hero-car.slide-in-right{
-  animation:carInRight 0.52s cubic-bezier(0.22,1,0.36,1) both;
+  animation:carInRight 0.52s cubic-bezier(0.22,1,0.36,1) none;
 }
 .hero-car.slide-in-left{
-  animation:carInLeft 0.52s cubic-bezier(0.22,1,0.36,1) both;
+  animation:carInLeft 0.52s cubic-bezier(0.22,1,0.36,1) none;
 }
 .hero-car.slide-out-left{
   animation:carOutLeft 0.35s cubic-bezier(0.55,0,1,0.45) forwards;
@@ -288,13 +288,14 @@ nav{
 .hero-car.slide-out-right{
   animation:carOutRight 0.35s cubic-bezier(0.55,0,1,0.45) forwards;
 }
+/* Slide-in: only animates opacity and X translation; scale is always set by JS inline style */
 @keyframes carInRight{
-  from{transform:translateX(120%);opacity:0}
-  to{transform:translateX(0);opacity:1}
+  0%{opacity:0;margin-left:120%}
+  100%{opacity:1;margin-left:0}
 }
 @keyframes carInLeft{
-  from{transform:translateX(-120%);opacity:0}
-  to{transform:translateX(0);opacity:1}
+  0%{opacity:0;margin-left:-120%}
+  100%{opacity:1;margin-left:0}
 }
 @keyframes carOutLeft{
   from{opacity:1}
@@ -1861,6 +1862,7 @@ const INITIAL_CARS = [
     heroImg:"hero_images/merc-a200d.png",
     heroOrder: 11,
     heroScale: 0.85,
+    yOffset: "-5%",
     imgs:["https://cdn.images.autoexposure.co.uk/AETA46135/AETV88074015_1.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV88074015_2.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV88074015_3.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV88074015_4.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV88074015_5.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV88074015_6.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV88074015_7.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV88074015_8.jpg"],
     cazooUrl:"https://www.cazoo.co.uk/cars-for-sale/77342770/",
     at:"#",fb:"https://www.facebook.com/share/1DzPe8NNxo/?mibextid=wwXIfr",wa:"https://wa.me/447891237204",ig:"https://www.instagram.com/speedbun?igsh=MWVhZ3pwNHE4anB6cQ%3D%3D&utm_source=qr",tt:"https://www.tiktok.com/@speedbuncars?_r=1&_t=ZN-952HaLEF7mI"
@@ -1891,6 +1893,7 @@ const INITIAL_CARS = [
     desc:"A lovely reliable cheap Seat Ibiza in great condition",
     heroImg:"hero_images/seat-ibiza.png",
     heroOrder: 5,
+    yOffset: "8%",
     imgs:["https://cdn.images.autoexposure.co.uk/AETA46135/AETV48234865_1.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48234865_2.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48234865_3.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48234865_4.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48234865_5.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48234865_6.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48234865_7.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48234865_8.jpg"],
     cazooUrl:"https://www.cazoo.co.uk/cars-for-sale/77704587/",
     at:"#",fb:"https://www.facebook.com/share/1DzPe8NNxo/?mibextid=wwXIfr",wa:"https://wa.me/447891237204",ig:"https://www.instagram.com/speedbun?igsh=MWVhZ3pwNHE4anB6cQ%3D%3D&utm_source=qr",tt:"https://www.tiktok.com/@speedbuncars?_r=1&_t=ZN-952HaLEF7mI"
@@ -1903,9 +1906,10 @@ const INITIAL_CARS = [
     fuel:"Diesel",trans:"Manual",color:"Grey",
     accentColor:"#7f8c8d",
     hp:"184",seats:"5",range:"N/A",
-    desc:"Timing belt & service has been done in 2026",
-    heroImg:"hero_images/bmw-3series.png",
+    desc:"Timing belt & service has been done",
     heroOrder: 6,
+    yOffset: "8%",
+    heroImg:"hero_images/bmw-3series.png",
     imgs:["https://cdn.images.autoexposure.co.uk/AETA46135/AETV45835309_1.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV45835309_2.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV45835309_3.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV45835309_4.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV45835309_5.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV45835309_6.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV45835309_7.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV45835309_8.jpg"],
     cazooUrl:"https://www.cazoo.co.uk/cars-for-sale/77023481/",
     at:"#",fb:"https://www.facebook.com/share/1DzPe8NNxo/?mibextid=wwXIfr",wa:"https://wa.me/447891237204",ig:"https://www.instagram.com/speedbun?igsh=MWVhZ3pwNHE4anB6cQ%3D%3D&utm_source=qr",tt:"https://www.tiktok.com/@speedbuncars?_r=1&_t=ZN-952HaLEF7mI"
@@ -1935,6 +1939,7 @@ const INITIAL_CARS = [
     hp:"320",seats:"5",range:"N/A",
     desc:"In fantastic condition inside out must be seen. M Performance",
     heroOrder: 7,
+    yOffset: "8%",
     heroImg:"hero_images/bmw-m135i.png",
     imgs:["https://cdn.images.autoexposure.co.uk/AETA46135/AETV91728343_1.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV91728343_2.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV91728343_3.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV91728343_4.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV91728343_5.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV91728343_6.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV91728343_7.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV91728343_8.jpg"],
     cazooUrl:"https://www.cazoo.co.uk/cars-for-sale/76027963/",
@@ -1949,8 +1954,9 @@ const INITIAL_CARS = [
     accentColor:"#4a90b8",
     hp:"220",seats:"5",range:"N/A",
     desc:"Stunning example a rare find 18 Months Warranty included",
-    heroImg:"hero_images/renault-clio-rs.png",
     heroOrder: 8,
+    yOffset: "8%",
+    heroImg:"hero_images/renault-clio-rs.png",
     imgs:["https://cdn.images.autoexposure.co.uk/AETA46135/AETV69025485_1.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV69025485_2.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV69025485_3.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV69025485_4.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV69025485_5.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV69025485_6.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV69025485_7.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV69025485_8.jpg"],
     cazooUrl:"https://www.cazoo.co.uk/cars-for-sale/76941836/",
     at:"#",fb:"https://www.facebook.com/share/1DzPe8NNxo/?mibextid=wwXIfr",wa:"https://wa.me/447891237204",ig:"https://www.instagram.com/speedbun?igsh=MWVhZ3pwNHE4anB6cQ%3D%3D&utm_source=qr",tt:"https://www.tiktok.com/@speedbuncars?_r=1&_t=ZN-952HaLEF7mI"
@@ -1979,8 +1985,9 @@ const INITIAL_CARS = [
     accentColor:"#4a90b8",
     hp:"310",seats:"5",range:"N/A",
     desc:"Honda Civic Type R GT with Milltek Exhaust and Mugen Bits",
-    heroImg:"hero_images/honda-civic-typer.png",
     heroOrder: 9,
+    yOffset: "8%",
+    heroImg:"hero_images/honda-civic-typer.png",
     imgs:["https://cdn.images.autoexposure.co.uk/AETA46135/AETV55140155_1.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV55140155_2.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV55140155_3.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV55140155_4.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV55140155_5.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV55140155_6.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV55140155_7.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV55140155_8.jpg"],
     cazooUrl:"https://www.cazoo.co.uk/cars-for-sale/77046469/",
     at:"#",fb:"https://www.facebook.com/share/1DzPe8NNxo/?mibextid=wwXIfr",wa:"https://wa.me/447891237204",ig:"https://www.instagram.com/speedbun?igsh=MWVhZ3pwNHE4anB6cQ%3D%3D&utm_source=qr",tt:"https://www.tiktok.com/@speedbuncars?_r=1&_t=ZN-952HaLEF7mI"
@@ -2670,8 +2677,17 @@ function buildHero() {
   hi = 0;
   fitHeroText();
   updateBtnColour(0);
-  // Apply per-car transforms after DOM paint (fixes Golf/positioning bug on initial load)
-  requestAnimationFrame(() => requestAnimationFrame(() => applyHeroCarTransforms()));
+  // Apply per-car transforms immediately (fixes first car position bug)
+  applyHeroCarTransforms();
+  // Also apply to each image individually as it loads (handles cached vs uncached images)
+  stage.querySelectorAll('.hero-car').forEach((img, i) => {
+    const applyNow = () => applyCarTransform(img, i);
+    if (img.complete && img.naturalWidth > 0) {
+      applyNow();
+    } else {
+      img.addEventListener('load', applyNow, { once: true });
+    }
+  });
 }
 
 function applyCarTransform(img, i) {
