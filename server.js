@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const app = express();
 
 // Middleware
@@ -17,14 +18,19 @@ app.use((req, res, next) => {
   next();
 });
 
-// Data file paths
-const DATA_DIR = path.join(__dirname, 'data');
-const CARS_FILE = path.join(DATA_DIR, 'cars.json');
+// ─── PERSISTENT DATA DIRECTORY ───────────────────────────────────────────────
+// Railway provides a persistent volume mounted at /data (configured in Railway dashboard).
+// Falls back to local ./data directory for development.
+const DATA_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH
+  ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH)
+  : path.join(__dirname, 'data');
+
+const CARS_FILE      = path.join(DATA_DIR, 'cars.json');
 const SOLD_CARS_FILE = path.join(DATA_DIR, 'sold_cars.json');
-const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
-const TEXT_FILE = path.join(DATA_DIR, 'text.json');
-const ADMIN_FILE = path.join(DATA_DIR, 'admin.json');
-const SESSIONS_FILE = path.join(DATA_DIR, 'sessions.json');
+const SETTINGS_FILE  = path.join(DATA_DIR, 'settings.json');
+const TEXT_FILE      = path.join(DATA_DIR, 'text.json');
+const ADMIN_FILE     = path.join(DATA_DIR, 'admin.json');
+const SESSIONS_FILE  = path.join(DATA_DIR, 'sessions.json');
 
 // Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
@@ -43,7 +49,11 @@ function readJSON(filePath, defaultVal) {
 }
 
 function writeJSON(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.error('writeJSON error:', filePath, err.message);
+  }
 }
 
 // Initialize data files if they don't exist
@@ -68,6 +78,80 @@ initDataFile(ADMIN_FILE, {
   password: "Admin1234!"
 });
 initDataFile(SESSIONS_FILE, {});
+
+// ─── EMAIL SETUP ──────────────────────────────────────────────────────────────
+// Configure via Railway environment variables:
+//   EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS, EMAIL_FROM
+// Falls back to Gmail SMTP if EMAIL_HOST not set (requires EMAIL_USER + EMAIL_PASS).
+function createTransporter() {
+  const host = process.env.EMAIL_HOST || process.env.MAIL_HOST || 'smtp.gmail.com';
+  const port = parseInt(process.env.EMAIL_PORT || '587');
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
+
+  if (!user || !pass) {
+    console.warn('⚠ Email not configured — set EMAIL_USER and EMAIL_PASS env vars in Railway');
+    return null;
+  }
+
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure: port === 465,
+    auth: { user, pass },
+    tls: { rejectUnauthorized: false }
+  });
+}
+
+const ENQUIRY_TO = process.env.ENQUIRY_EMAIL || 'imi1981@gmail.com';
+
+async function sendEnquiryEmail(data) {
+  const transporter = createTransporter();
+  if (!transporter) return false;
+
+  const { name, email, phone, car, message } = data;
+
+  const html = `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f5f8fb;padding:30px;border-radius:12px">
+      <div style="background:#1a4d6b;padding:20px 30px;border-radius:8px 8px 0 0;text-align:center">
+        <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:0.05em">Speed Bun — New Enquiry</h1>
+        <p style="color:rgba(255,255,255,0.7);margin:6px 0 0;font-size:13px">Solihull, Birmingham, UK</p>
+      </div>
+      <div style="background:#fff;padding:28px 30px;border-radius:0 0 8px 8px;border:1px solid #dde8f0;border-top:none">
+        <table style="width:100%;border-collapse:collapse">
+          <tr><td style="padding:10px 0;border-bottom:1px solid #eef2f7;color:#666;font-size:13px;width:130px">Name</td>
+              <td style="padding:10px 0;border-bottom:1px solid #eef2f7;color:#1a1a2e;font-weight:600">${name || 'N/A'}</td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #eef2f7;color:#666;font-size:13px">Email</td>
+              <td style="padding:10px 0;border-bottom:1px solid #eef2f7;color:#1a4d6b;font-weight:600"><a href="mailto:${email}" style="color:#1a4d6b">${email || 'N/A'}</a></td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #eef2f7;color:#666;font-size:13px">Phone</td>
+              <td style="padding:10px 0;border-bottom:1px solid #eef2f7;color:#1a1a2e;font-weight:600">${phone || 'N/A'}</td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid #eef2f7;color:#666;font-size:13px">Vehicle</td>
+              <td style="padding:10px 0;border-bottom:1px solid #eef2f7;color:#1a1a2e;font-weight:600">${car || 'Not specified'}</td></tr>
+          <tr><td style="padding:10px 0;color:#666;font-size:13px;vertical-align:top">Message</td>
+              <td style="padding:10px 0;color:#1a1a2e">${(message || 'No message provided').replace(/\n/g, '<br>')}</td></tr>
+        </table>
+        <div style="margin-top:24px;padding:16px;background:#f0f7ff;border-radius:8px;border-left:4px solid #1a4d6b">
+          <p style="margin:0;font-size:12px;color:#666">Received: ${new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })}</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM || `"Speed Bun Enquiries" <${process.env.EMAIL_USER}>`,
+      to: ENQUIRY_TO,
+      subject: `New Enquiry from ${name || 'Website Visitor'} — Speed Bun`,
+      html,
+      text: `New enquiry from ${name}\nEmail: ${email}\nPhone: ${phone}\nVehicle: ${car}\nMessage: ${message}`
+    });
+    console.log('✅ Enquiry email sent to', ENQUIRY_TO);
+    return true;
+  } catch (err) {
+    console.error('❌ Email send failed:', err.message);
+    return false;
+  }
+}
 
 // ─── AUTH MIDDLEWARE ──────────────────────────────────────────────────────────
 function requireAdmin(req, res, next) {
@@ -237,10 +321,18 @@ app.get('/api/sold-cars', (req, res) => {
 
 // ─── ENQUIRY ROUTE ────────────────────────────────────────────────────────────
 
-app.post('/api/enquiry', (req, res) => {
-  // Just acknowledge — no email sending in this version
-  console.log('Enquiry received:', req.body);
-  res.json({ ok: true, message: 'Enquiry received' });
+app.post('/api/enquiry', async (req, res) => {
+  const { name, email, phone, car, message } = req.body || {};
+  console.log('Enquiry received:', { name, email, phone, car });
+
+  // Send email notification
+  const emailSent = await sendEnquiryEmail({ name, email, phone, car, message });
+
+  res.json({
+    ok: true,
+    message: 'Enquiry received',
+    emailSent
+  });
 });
 
 // ─── REMOVE BG STUB ──────────────────────────────────────────────────────────
@@ -252,7 +344,13 @@ app.post('/api/remove-bg', (req, res) => {
 // ─── HEALTH CHECK ─────────────────────────────────────────────────────────────
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, status: 'SpeedBun backend running', time: new Date().toISOString() });
+  res.json({
+    ok: true,
+    status: 'SpeedBun backend running',
+    time: new Date().toISOString(),
+    dataDir: DATA_DIR,
+    emailConfigured: !!(process.env.EMAIL_USER && process.env.EMAIL_PASS)
+  });
 });
 
 // ─── SAVE ALL (bulk) ─────────────────────────────────────────────────────────
@@ -274,4 +372,6 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`SpeedBun server running on port ${PORT}`);
+  console.log(`Data directory: ${DATA_DIR}`);
+  console.log(`Email configured: ${!!(process.env.EMAIL_USER && process.env.EMAIL_PASS)}`);
 });
