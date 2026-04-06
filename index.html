@@ -1799,6 +1799,7 @@ const INITIAL_CARS = [
     desc:"BMW 4 Series 430d xDrive M Sport with Professional Media",
     heroImg:"hero_images/bmw-4series.png",
     heroOrder: 2,
+    yOffset: "8%",
     imgs:["https://cdn.images.autoexposure.co.uk/AETA46135/AETV48128971_1.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48128971_2.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48128971_3.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48128971_4.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48128971_5.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48128971_6.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48128971_7.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV48128971_8.jpg"],
     cazooUrl:"https://www.cazoo.co.uk/cars-for-sale/77938619/",
     at:"#",fb:"https://www.facebook.com/share/1DzPe8NNxo/?mibextid=wwXIfr",wa:"https://wa.me/447891237204",ig:"https://www.instagram.com/speedbun?igsh=MWVhZ3pwNHE4anB6cQ%3D%3D&utm_source=qr",tt:"https://www.tiktok.com/@speedbuncars?_r=1&_t=ZN-952HaLEF7mI"
@@ -1846,6 +1847,7 @@ const INITIAL_CARS = [
     desc:"M Sport 18 months Warranty New Turbo Service",
     heroImg:"hero_images/bmw-2series.png",
     heroOrder: 1,
+    yOffset: "10%",
     imgs:["https://cdn.images.autoexposure.co.uk/AETA46135/AETV13144769_1.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV13144769_2.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV13144769_3.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV13144769_4.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV13144769_5.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV13144769_6.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV13144769_7.jpg", "https://cdn.images.autoexposure.co.uk/AETA46135/AETV13144769_8.jpg"],
     cazooUrl:"https://www.cazoo.co.uk/cars-for-sale/77482445/",
     at:"#",fb:"https://www.facebook.com/share/1DzPe8NNxo/?mibextid=wwXIfr",wa:"https://wa.me/447891237204",ig:"https://www.instagram.com/speedbun?igsh=MWVhZ3pwNHE4anB6cQ%3D%3D&utm_source=qr",tt:"https://www.tiktok.com/@speedbuncars?_r=1&_t=ZN-952HaLEF7mI"
@@ -2699,12 +2701,10 @@ function applyCarTransform(img, i) {
   // Use smaller scale on mobile for better fit
   const isMobile = window.innerWidth <= 540;
   const isTablet = window.innerWidth <= 900;
-  const baseScale = c.heroScale ? c.heroScale : (i === 0 ? 1.4 : 1.3);
+  const baseScale = c.heroScale ? c.heroScale : 1.3;
   const scale = isMobile ? Math.min(baseScale, 1.1) : (isTablet ? Math.min(baseScale, 1.2) : baseScale);
   if (yOff) {
     img.style.transform = `scale(${scale}) translateY(${yOff})`;
-  } else if (i === 0) {
-    img.style.transform = `scale(${scale}) translateY(-4%)`;
   } else {
     img.style.transform = `scale(${scale})`;
   }
