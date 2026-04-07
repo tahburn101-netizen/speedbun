@@ -1129,24 +1129,24 @@ nav{
   .con-cards{grid-template-columns:1fr}
   .about-stats{grid-template-columns:1fr;gap:10px}
   /* Remove blue background box from avatar icon in mobile view */
-  .nav-avatar{background:transparent !important;width:24px;height:24px}
-  .nav-avatar svg{stroke:var(--blue-deep)}
-  /* Hero mobile: optimised layout - car fills lower 60%, text sits top 35% */
-  .home-hero{min-height:420px}
-  .hero-text-block{top:18%;height:38%}
-  .hero-car-box{left:0;right:0;top:30%;bottom:8%;overflow:hidden}
-  .hero-bg-text{font-size:26vw;line-height:0.9}
-  .hero-make{font-size:clamp(10px,3.5vw,18px);letter-spacing:0.28em}
-  .hero-specs{right:4px;top:auto;bottom:60px;flex-direction:row;gap:10px;background:rgba(238,243,247,0.85);padding:6px 10px;border-radius:10px}
-  .spec-item{align-items:center}
-  .spec-num{font-size:13px}
-  .spec-lbl,.spec-unit{font-size:7px}
-  .specs-title{display:none}
-  .h-ctas{bottom:16px;gap:8px}
-  .btn-fill,.btn-outline{padding:9px 16px;font-size:11px;letter-spacing:0.1em}
-  .h-dots{bottom:56px}
-  .h-dot{width:6px;height:6px}
-  .h-arrow{font-size:20px;padding:0;background:none !important}
+	  .nav-avatar{background:transparent !important;width:24px;height:24px;border:none !important;box-shadow:none !important}
+	  .nav-avatar svg{stroke:var(--blue-deep)}
+	  /* Hero mobile: optimised layout - car fills lower 60%, text sits top 35% */
+	  .home-hero{min-height:420px}
+	  .hero-text-block{top:18%;height:38%}
+	  .hero-car-box{left:0;right:0;top:30%;bottom:8%;overflow:hidden;background:none !important;border:none !important;box-shadow:none !important}
+	  .hero-bg-text{font-size:26vw;line-height:0.9}
+	  .hero-make{font-size:clamp(10px,3.5vw,18px);letter-spacing:0.28em}
+	  .hero-specs{right:4px;top:auto;bottom:60px;flex-direction:row;gap:10px;background:transparent !important;padding:6px 10px;border-radius:10px;border:none !important;box-shadow:none !important}
+	  .spec-item{align-items:center;background:none !important;border:none !important}
+	  .spec-num{font-size:13px}
+	  .spec-lbl,.spec-unit{font-size:7px}
+	  .specs-title{display:none}
+	  .h-ctas{bottom:16px;gap:8px;background:none !important;border:none !important}
+	  .btn-fill,.btn-outline{padding:9px 16px;font-size:11px;letter-spacing:0.1em}
+	  .h-dots{bottom:56px;background:none !important;border:none !important}
+	  .h-dot{width:6px;height:6px}
+	  .h-arrow{font-size:20px;padding:0;background:none !important;border:none !important;box-shadow:none !important}
   .social-bar{display:none !important}
   /* Increased mobile home page padding */
   .about-section,.reviews-section{padding:52px 24px;overflow:visible}
@@ -3306,7 +3306,12 @@ async function saveCar() {
   if (result && result.ok) {
     // Reload cars from backend
     const carsData = await apiGet('/api/cars');
-    if (carsData) cars = carsData.map(mapCar);
+    if (carsData) {
+      cars = carsData.map(mapCar);
+      const soldData = await apiGet('/api/sold-cars');
+      if (soldData) soldCars = soldData.map(s => ({ id: 's' + s.id, img: s.image_url, name: s.label||'Sold Vehicle' }));
+      localSave();
+    }
     closeMbg('addMbg');
     buildHero();
     renderFeatured();
